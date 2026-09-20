@@ -1,0 +1,126 @@
+# Build the PDF and publish a GitHub release when a version tag is pushed.
+#
+# This workflow does not create the tag. The author creates and pushes the tag
+# by hand, after the CHANGELOG.md entry for that version is written and a local
+# build has been checked. PUBLISHING.md has the full checklist, including the
+# exact tag command and what to verify before running it.
+#
+# A tag of the form v0.3 produces a release named after the tag, with the
+# CHANGELOG.md section for 0.3 as its notes and the built PDF attached.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      # The exact install command from build/fonts.md. The document names
+      # Carlito, Caladea, DejaVu Sans, DejaVu Sans Condensed and DejaVu Sans
+      # Mono. WeasyPrint substitutes a missing family silently, which changes
+      # the metrics and the page count without reporting an error, so these
+      # packages decide whether the released PDF is the reference document.
+      - name: Install the document fonts
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y fonts-crosextra-carlito fonts-crosextra-caladea fonts-dejavu fonts-dejavu-core fonts-dejavu-extra
+          sudo fc-cache -f
+
+      # WeasyPrint lays out text through Pango and HarfBuzz, which it reaches
+      # as shared libraries rather than as Python packages, so pip cannot
+      # supply them. This list follows the Ubuntu section of the WeasyPrint
+      # first steps documentation at
+      # https://doc.courtbouillon.org/weasyprint/stable/first_steps.html
+      - name: Install the WeasyPrint system libraries
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y \
+            libpango-1.0-0 \
+            libpangoft2-1.0-0 \
+            libharfbuzz0b \
+            libharfbuzz-subset0 \
+            libffi-dev \
+            libjpeg-dev \
+            libopenjp2-7-dev
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install the Python build dependencies
+        run: python3 -m pip install -r build/requirements.txt
+
+      # Writes dist/AICD-Methodology-v<version>.pdf and prints the page count.
+      # The reference build of v0.3 is 76 pages.
+      - name: Build the PDF
+        run: build/build.sh
+
+      # The release notes are the CHANGELOG.md section for the tagged version,
+      # never a generated summary. The version is the tag with the leading v
+      # removed, so the tag v0.3 selects the section headed: ## [0.3] - 2026-09
+      - name: Extract the release notes from CHANGELOG.md
+        id: notes
+        run: |
+          set -euo pipefail
+
+          version="${GITHUB_REF_NAME#v}"
+          notes_file="${RUNNER_TEMP}/release-notes.md"
+
+          if [ ! -f CHANGELOG.md ]; then
+            echo "release: CHANGELOG.md is missing, so there are no notes for ${version}" >&2
+            exit 1
+          fi
+
+          # Print everything after the heading that begins "## [<version>]" and
+          # stop at the next level two heading. index(...) == 1 is a literal
+          # prefix test, so the version number is never read as a regular
+          # expression and "## [0.30]" is not mistaken for "## [0.3]". Blank
+          # lines at the start and end of the section are held back rather than
+          # printed, which keeps the notes tight without touching the blank
+          # lines inside them.
+          awk -v prefix="## [${version}]" '
+            !found && index($0, prefix) == 1 { found = 1; next }
+            found && /^## / { exit }
+            found {
+              if ($0 ~ /^[[:space:]]*$/) { if (started) held = held "\n"; next }
+              if (started) printf "%s", held
+              held = ""
+              print
+              started = 1
+            }
+          ' CHANGELOG.md > "${notes_file}"
+
+          # A release whose notes are empty says nothing about what changed,
+          # which is worse than a build that failed and can be run again. Stop
+          # here, and print the headings that do exist so the cause is obvious.
+          if [ ! -s "${notes_file}" ]; then
+            echo "release: no CHANGELOG.md section found for version ${version}" >&2
+            echo "release: expected a heading of the form: ## [${version}] - YYYY-MM" >&2
+            echo "release: the headings CHANGELOG.md actually has are:" >&2
+            grep -n '^## ' CHANGELOG.md >&2 || echo "release:   (none)" >&2
+            exit 1
+          fi
+
+          echo "path=${notes_file}" >> "${GITHUB_OUTPUT}"
+          echo "release: notes for ${version}"
+          sed 's/^/release:   /' "${notes_file}"
+
+      - name: Publish the release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: dist/*.pdf
+          body_path: ${{ steps.notes.outputs.path }}
+          fail_on_unmatched_files: true
