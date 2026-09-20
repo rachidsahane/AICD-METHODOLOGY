@@ -1,0 +1,18 @@
+# Python dependencies for build/build.sh.
+#
+# Install with:
+#   python3 -m pip install -r build/requirements.txt
+#
+# WeasyPrint is pinned to the major version the PDF in dist/ was produced with.
+# Minor and patch releases inside that major are accepted, because WeasyPrint
+# keeps its paged-media rendering stable within a major version and the
+# document depends on running headers, leader() and target-counter().
+weasyprint>=70,<71
+
+# pypdf reads the finished file back to report the page count.
+pypdf>=6,<7
+
+# Not needed to build the PDF. build/generate_assets.py, which regenerates
+# src/cover_bg.jpg and src/portrait_circle.png, additionally needs:
+#   pillow>=10
+#   numpy>=1.26
