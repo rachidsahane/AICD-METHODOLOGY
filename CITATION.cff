@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this methodology, please cite it as below."
+title: "AICD: Artificial Intelligence Centered Development"
+authors:
+  - family-names: "Ngatcha Sahane"
+    given-names: "Rachid Alim"
+version: "0.3"
+date-released: "2026-09-30" # The document gives only the month, September 2026, so the last day of that month is used.
+url: "https://github.com/rachidsahane/AICD-METHODOLOGY"
+repository-code: "https://github.com/rachidsahane/AICD-METHODOLOGY"
+license: CC-BY-4.0
+keywords:
+  - "software development methodology"
+  - "AI agents"
+  - "agentic engineering"
+  - "spec-driven development"
+  - "software engineering"
+abstract: >-
+  AICD is a software development methodology in which a complete development
+  team is reproduced with AI agents, each with its own role and its own
+  context, supervised by a small team of experienced human engineers who
+  specify, verify, decide and monitor. The agents build, test, operate and
+  document the software from written specifications, while the humans never
+  write production code or test code and remain accountable for the
+  specification, the control points and the decisions.
+# The identifiers block below is intentionally commented out until the first
+# release is archived and a DOI exists. Uncomment it exactly as written here,
+# replacing the value with the DOI, and keep the two leading spaces of
+# indentation on the list item:
+#
+# identifiers:
+#   - type: doi
+#     value: <<NEEDS: Zenodo DOI after first archived release>>
+#     description: "Concept DOI on Zenodo, which always resolves to the newest archived release"
+preferred-citation:
+  type: manual
+  title: "AICD: Artificial Intelligence Centered Development"
+  authors:
+    - family-names: "Ngatcha Sahane"
+      given-names: "Rachid Alim"
+  year: 2026
+  url: "https://github.com/rachidsahane/AICD-METHODOLOGY"
