@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="author" content="Alim Sahane">
 <meta name="description" content="AICD: Artificial Intelligence Centered Development. Methodology guide, version 0.3 working draft.">
+<meta name="license" content="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dc.rights" content="AICD © 2026 by Alim Sahane is licensed under CC BY 4.0, https://creativecommons.org/licenses/by/4.0/. Photographs and the author's likeness are excluded from this license and remain all rights reserved. The name AICD is subject to the trademark policy in TRADEMARK.md.">
+<!-- Add the Zenodo DOI here once the first release is archived, as:
+     <meta name="dc.identifier" content="<<NEEDS: DOI>>"> -->
 <title>AICD: Artificial Intelligence Centered Development</title>
 <style>
 @page {
@@ -13,6 +17,7 @@
   @bottom-right { content: counter(page); font-family: "Carlito"; font-size: 9pt; color: #7a7a7a; }
 }
 @page cover { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
+@page colophon { @bottom-left { content: none; } @bottom-right { content: none; } }
 @page toc { @bottom-left { content: "AICD  |  Contents"; font-family: "Carlito"; font-size: 8.5pt; color: #7a7a7a; } }
 
 :root {
@@ -74,6 +79,15 @@ tr:nth-child(even) td { background: #fafbfc; }
 .cover .author { position: absolute; left: 20mm; top: 200mm; width: 170mm; background: rgba(255,255,255,0.7); padding: 3mm 4mm 3mm 0; }
 .cover .author .by { font-family: "Caladea", "GFS Baskerville", serif; font-size: 20pt; color: #0f4c5c; margin: 0; }
 .cover .author .ver { margin: 3mm 0 0 0; font-size: 10pt; color: #5b6570; max-width: 120mm; }
+/* Colophon */
+.colophon { page: colophon; page-break-after: always; padding-top: 28mm; }
+.colophon .label { font-family: "DejaVu Sans Condensed", sans-serif; color: var(--accent2); font-size: 9.5pt; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 3mm 0; }
+.colophon h1.doctitle { font-family: "Caladea", "GFS Baskerville", serif; font-size: 21pt; color: var(--accent); border: none; margin: 0; padding: 0; page-break-before: avoid; line-height: 1.22; }
+.colophon .rule { width: 34mm; height: 1.4mm; background: var(--accent2); margin: 6mm 0 8mm 0; }
+.colophon table.meta-table { margin: 0 0 7mm 0; }
+.colophon .notice p { margin-bottom: 2.4mm; }
+.colophon .notice p:last-child { margin-bottom: 0; }
+.colophon .source { margin-top: 7mm; }
 /* Author page */
 .authorpage { page-break-before: always; padding-top: 30mm; }
 .authorpage .wrap { display: flex; gap: 12mm; align-items: flex-start; }
@@ -88,6 +102,8 @@ tr:nth-child(even) td { background: #fafbfc; }
 .authorpage table.contact td:first-child { width: 26mm; font-family: "DejaVu Sans Condensed", sans-serif; color: #0f4c5c; font-weight: bold; }
 .authorpage table.contact a { color: #1b1f24; text-decoration: none; }
 .authorpage .bio { margin-top: 10mm; padding-top: 5mm; border-top: 1px solid #d8dee3; color: #1b1f24; }
+.authorpage .licensefooter { margin-top: 9mm; padding-top: 4mm; border-top: 1px solid #d8dee3; font-size: 8.7pt; line-height: 1.5; color: #5b6570; }
+.authorpage .licensefooter a { color: #5b6570; text-decoration: none; }
 /* TOC */
 .toc { page: toc; page-break-after: always; }
 .toc h1 { page-break-before: avoid; }
@@ -113,6 +129,27 @@ tr:nth-child(even) td { background: #fafbfc; }
     <p class="by">by Alim Sahane</p>
     <p class="ver">Version 0.3, working draft. September 2026.<br>This document is a living base. It records what has been decided so far and is extended as the methodology is explored and tested on real projects.</p>
   </div>
+</div>
+
+<div class="colophon">
+  <p class="label">Colophon</p>
+  <h1 class="doctitle">AICD: Artificial Intelligence Centered Development</h1>
+  <div class="rule"></div>
+
+  <table class="meta-table">
+    <tr><td>Version</td><td>0.3, working draft</td></tr>
+    <tr><td>Date</td><td>September 2026</td></tr>
+    <tr><td>Author</td><td>Ngatcha Sahane Rachid Alim, publishing as Alim Sahane</td></tr>
+    <tr><td>Repository</td><td><a href="https://github.com/rachidsahane/AICD-METHODOLOGY">https://github.com/rachidsahane/AICD-METHODOLOGY</a></td></tr>
+  </table>
+
+  <div class="box notice">
+    <div class="t">License</div>
+    <p><a href="https://github.com/rachidsahane/AICD-METHODOLOGY.git">AICD</a> © 2026 by <a href="https://github.com/rachidsahane">Alim Sahane</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><img src="assets/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="assets/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"></p>
+    <p>Photographs and the author's likeness are excluded from this license and remain all rights reserved. The name AICD is subject to the trademark policy in TRADEMARK.md.</p>
+  </div>
+
+  <p class="small source">This PDF is built from the HTML source in the repository above. The source at its release tag is the authoritative version of the methodology.</p>
 </div>
 
 <div class="toc">
@@ -1513,6 +1550,7 @@ tr:nth-child(even) td { background: #fafbfc; }
     </div>
   </div>
   <p class="bio">AICD grew out of building and operating several production SaaS products with AI coding agents, and out of the question that follows: how to organize a team that maintains and grows software no human wrote. The methodology is applied on live products and revised from what those applications teach. Feedback, critiques and reports of applying AICD on other products are welcome through any of the channels above.</p>
+  <p class="licensefooter">AICD © 2026 by Alim Sahane is licensed under CC BY 4.0. To view a copy of this license, visit <a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a><br>Photographs and the author's likeness are excluded from this license and remain all rights reserved. The name AICD is subject to the trademark policy in TRADEMARK.md.</p>
 </div>
 
 </body>
