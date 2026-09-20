@@ -1,0 +1,89 @@
+# Publish the AICD methodology document as a web page on GitHub Pages.
+#
+# This workflow cannot enable Pages for you. Before the first run somebody has
+# to switch the repository over by hand, in Settings, Pages, under Build and
+# deployment, by setting Source to GitHub Actions. Until that is done every run
+# stops early, in the build job, at the Configure Pages step, which reports
+# "Get Pages site failed". PUBLISHING.md walks through that step and the rest
+# of the release checklist.
+#
+# What gets published: the whole of src/, with the single HTML document renamed
+# to index.html. Every other file keeps its path relative to the document, so
+# cover_bg.jpg, portrait_circle.png and assets/ resolve exactly as they do when
+# the document is opened from a local checkout.
+
+name: Deploy the document to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# The permissions the official GitHub Pages deployment pattern requires.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time. In-progress runs are allowed to finish rather than
+# being cancelled, so a half-published site is never left behind.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Assemble _site from src/
+        run: |
+          set -euo pipefail
+
+          # Exactly one HTML document is expected in src/. Finding none, or
+          # finding several, means the repository layout changed and the name
+          # of the page to publish is no longer unambiguous, so stop here
+          # rather than deploying a site with no index.html.
+          html_count="$(find src -maxdepth 1 -type f -name '*.html' | wc -l | tr -d ' ')"
+          if [ "$html_count" -ne 1 ]; then
+            echo "pages: expected exactly one .html file in src/, found ${html_count}" >&2
+            find src -maxdepth 1 -type f -name '*.html' >&2 || true
+            exit 1
+          fi
+          html_name="$(basename "$(find src -maxdepth 1 -type f -name '*.html')")"
+
+          rm -rf _site
+          mkdir -p _site
+          cp -R src/. _site/
+
+          if [ "$html_name" != "index.html" ]; then
+            mv "_site/${html_name}" _site/index.html
+          fi
+
+          echo "pages: publishing ${html_name} as index.html"
+          echo "pages: site contents"
+          find _site -type f | sort | sed 's/^/pages:   /'
+
+      - name: Upload the site artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the site
+        id: deployment
+        uses: actions/deploy-pages@v5
