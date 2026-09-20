@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Alim Sahane">
+<meta name="description" content="AICD: Artificial Intelligence Centered Development. Methodology guide, version 0.3 working draft.">
+<title>AICD: Artificial Intelligence Centered Development</title>
+<style>
+@page {
+  size: A4;
+  margin: 22mm 20mm 22mm 20mm;
+  @bottom-left { content: "AICD  |  Artificial Intelligence Centered Development  |  v0.3 working draft"; font-family: "Carlito"; font-size: 8.5pt; color: #7a7a7a; }
+  @bottom-right { content: counter(page); font-family: "Carlito"; font-size: 9pt; color: #7a7a7a; }
+}
+@page cover { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
+@page toc { @bottom-left { content: "AICD  |  Contents"; font-family: "Carlito"; font-size: 8.5pt; color: #7a7a7a; } }
+
+:root {
+  --ink: #1b1f24;
+  --muted: #5b6570;
+  --accent: #0f4c5c;
+  --accent2: #e36414;
+  --paper: #ffffff;
+  --panel: #f3f6f7;
+  --line: #d8dee3;
+}
+html, body { font-family: "Carlito", "DejaVu Sans", sans-serif; font-size: 11pt; line-height: 1.45; color: var(--ink); }
+h1, h2, h3, h4 { font-family: "DejaVu Sans Condensed", "DejaVu Sans", sans-serif; color: var(--accent); line-height: 1.2; }
+h1 { font-size: 24pt; margin: 12mm 0 6mm 0; page-break-before: auto; page-break-after: avoid; padding-top: 2mm; border-bottom: 2px solid var(--accent); padding-bottom: 3mm; }
+h1 .num { color: var(--accent2); margin-right: 8px; }
+h2 { font-size: 15pt; margin: 8mm 0 3mm 0; page-break-after: avoid; }
+h3 { font-size: 12pt; margin: 6mm 0 2mm 0; color: #1b1f24; page-break-after: avoid; }
+p { margin: 0 0 3.2mm 0; text-align: left; orphans: 3; widows: 3; }
+ul, ol { margin: 0 0 3.5mm 0; padding-left: 6mm; }
+li { margin-bottom: 1.4mm; }
+strong { color: #111; }
+code, .mono { font-family: "DejaVu Sans Mono", monospace; font-size: 9.2pt; background: #eef1f3; padding: 0 3px; border-radius: 2px; }
+table { width: 100%; border-collapse: collapse; margin: 3mm 0 5mm 0; font-size: 9.8pt; page-break-inside: auto; }
+th { background: var(--accent); color: #fff; text-align: left; padding: 2.2mm 2.5mm; font-weight: bold; font-family: "DejaVu Sans Condensed", sans-serif; font-size: 9.5pt; }
+td { padding: 2mm 2.5mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tr:nth-child(even) td { background: #fafbfc; }
+
+.part { page-break-before: always; padding-top: 70mm; text-align: left; }
+.part .label { font-family: "DejaVu Sans Condensed", sans-serif; color: var(--accent2); font-size: 13pt; letter-spacing: 2px; text-transform: uppercase; }
+.part h1.parttitle { border: none; font-size: 32pt; page-break-before: avoid; margin-top: 4mm; }
+.part p.lead { font-size: 13pt; color: var(--muted); max-width: 140mm; }
+
+.box { border-left: 4px solid var(--accent); background: var(--panel); padding: 3mm 4mm; margin: 3.5mm 0 4.5mm 0; page-break-inside: avoid; }
+.box.rule { border-left-color: var(--accent2); }
+.box .t { font-family: "DejaVu Sans Condensed", sans-serif; font-weight: bold; color: var(--accent); font-size: 10pt; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5mm; }
+.box.rule .t { color: var(--accent2); }
+.box p:last-child { margin-bottom: 0; }
+.principle { display: flex; gap: 4mm; margin-bottom: 3.5mm; page-break-inside: avoid; }
+.principle .n { flex: 0 0 11mm; height: 11mm; border-radius: 50%; background: var(--accent); color: #fff; font-family: "DejaVu Sans Condensed", sans-serif; font-weight: bold; font-size: 13pt; display: flex; align-items: center; justify-content: center; }
+.principle .body { flex: 1; }
+.principle .body b { display: block; font-family: "DejaVu Sans Condensed", sans-serif; color: var(--accent); margin-bottom: 1mm; }
+.flow { display: flex; flex-wrap: wrap; gap: 2mm; margin: 3mm 0 5mm 0; }
+.flow span { background: var(--accent); color: #fff; padding: 2mm 3.5mm; font-family: "DejaVu Sans Condensed", sans-serif; font-size: 9.5pt; border-radius: 2px; }
+.flow span.arrow { background: none; color: var(--accent2); padding: 2mm 0; font-weight: bold; }
+.layer { border: 1px solid var(--line); border-top: 4px solid var(--accent); padding: 3mm 4mm; margin-bottom: 3mm; page-break-inside: avoid; }
+.layer b.name { font-family: "DejaVu Sans Condensed", sans-serif; color: var(--accent); font-size: 11.5pt; }
+.layer .meta { color: var(--muted); font-size: 9.5pt; margin-bottom: 1.5mm; }
+.small { font-size: 9.5pt; color: var(--muted); }
+.meta-table td:first-child { font-weight: bold; width: 38mm; color: var(--accent); }
+
+/* Cover */
+.cover { page: cover; width: 210mm; height: 297mm; position: relative; page-break-after: always; background: #f4f7f8 url("cover_bg.jpg") center bottom / cover no-repeat; }
+.cover .content { position: absolute; left: 20mm; top: 34mm; width: 170mm; }
+.cover .acronym { font-family: "GFS Baskerville", "Caladea", serif; font-size: 96pt; font-weight: normal; letter-spacing: 2px; line-height: 1; margin: 0; color: #0f4c5c; }
+.cover .full { font-family: "Caladea", "GFS Baskerville", serif; font-size: 22pt; font-style: italic; margin: 4mm 0 0 0; color: #e36414; }
+.cover .rule { width: 34mm; height: 1.4mm; background: #e36414; margin: 10mm 0 8mm 0; }
+.cover .sub { font-family: "Carlito", sans-serif; font-size: 12.5pt; margin: 0; max-width: 118mm; color: #1b1f24; line-height: 1.55; background: rgba(255,255,255,0.78); padding: 4mm 5mm; border-left: 1mm solid #0f4c5c; }
+.cover .author { position: absolute; left: 20mm; top: 200mm; width: 170mm; background: rgba(255,255,255,0.7); padding: 3mm 4mm 3mm 0; }
+.cover .author .by { font-family: "Caladea", "GFS Baskerville", serif; font-size: 20pt; color: #0f4c5c; margin: 0; }
+.cover .author .ver { margin: 3mm 0 0 0; font-size: 10pt; color: #5b6570; max-width: 120mm; }
+/* Author page */
+.authorpage { page-break-before: always; padding-top: 30mm; }
+.authorpage .wrap { display: flex; gap: 12mm; align-items: flex-start; }
+.authorpage .photo { flex: 0 0 58mm; }
+.authorpage .photo img { width: 58mm; height: 58mm; border-radius: 50%; display: block; border: 1.2mm solid #0f4c5c; }
+.authorpage .info { flex: 1; }
+.authorpage .label { font-family: "DejaVu Sans Condensed", sans-serif; color: #e36414; font-size: 9.5pt; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 3mm 0; }
+.authorpage h1.name { font-family: "GFS Baskerville", "Caladea", serif; font-size: 26pt; border: none; margin: 0 0 2mm 0; padding: 0; page-break-before: avoid; line-height: 1.15; }
+.authorpage .role { color: #5b6570; font-size: 11.5pt; margin: 0 0 8mm 0; }
+.authorpage table.contact { width: 100%; margin: 0; font-size: 11pt; }
+.authorpage table.contact td { border: none; padding: 1.8mm 0; background: none; vertical-align: top; }
+.authorpage table.contact td:first-child { width: 26mm; font-family: "DejaVu Sans Condensed", sans-serif; color: #0f4c5c; font-weight: bold; }
+.authorpage table.contact a { color: #1b1f24; text-decoration: none; }
+.authorpage .bio { margin-top: 10mm; padding-top: 5mm; border-top: 1px solid #d8dee3; color: #1b1f24; }
+/* TOC */
+.toc { page: toc; page-break-after: always; }
+.toc h1 { page-break-before: avoid; }
+.toc ol { list-style: none; padding: 0; margin: 0; }
+.toc li { margin: 0; padding: 1.2mm 0; display: flex; align-items: baseline; }
+.toc li.lvl2 { padding-left: 8mm; font-size: 10pt; color: #333; }
+.toc li.tocpart { font-family: "DejaVu Sans Condensed", sans-serif; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; font-size: 9.5pt; margin-top: 4mm; padding-bottom: 0; }
+.toc li a { color: inherit; text-decoration: none; flex: 1; }
+.toc li a::after { content: leader(". ") target-counter(attr(href), page); color: #888; }
+.toc li.tocpart a::after { content: none; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="content">
+    <p class="acronym">AICD</p>
+    <p class="full">Artificial Intelligence Centered Development</p>
+    <div class="rule"></div>
+    <p class="sub">A software development methodology in which artificial intelligence builds, tests, operates and documents the software, and humans specify, verify, decide and supervise. A guide for teams that intend to ship and maintain production systems without writing code by hand.</p>
+  </div>
+  <div class="author">
+    <p class="by">by Alim Sahane</p>
+    <p class="ver">Version 0.3, working draft. September 2026.<br>This document is a living base. It records what has been decided so far and is extended as the methodology is explored and tested on real projects.</p>
+  </div>
+</div>
+
+<div class="toc">
+<h1>Contents</h1>
+<ol>
+  <li class="tocpart"><a href="#part1">Part I: Understanding AICD</a></li>
+  <li><a href="#s1">1. Why a new methodology</a></li>
+  <li><a href="#s2">2. AICD in one page</a></li>
+  <li><a href="#s3">3. Founding principles</a></li>
+  <li><a href="#s4">4. What stays, what changes</a></li>
+  <li><a href="#s5">5. Design philosophy: open to extension, closed to modification</a></li>
+
+  <li class="tocpart"><a href="#part2">Part II: The architecture of AICD</a></li>
+  <li><a href="#s6">6. The five layers</a></li>
+  <li><a href="#s7">7. The agent team and separation of duties</a></li>
+  <li><a href="#s8">8. Memory architecture</a></li>
+
+  <li class="tocpart"><a href="#part3">Part III: How work flows</a></li>
+  <li><a href="#s9">9. The specification system</a></li>
+  <li><a href="#s10">10. Feature flow: from idea to observed behavior</a></li>
+  <li><a href="#s11">11. Ticket lifecycle and categories</a></li>
+  <li><a href="#s12">12. Working validated tickets: fleet mode, pairing mode, escalation</a></li>
+  <li><a href="#s13">13. Git and release workflow</a></li>
+  <li><a href="#s14">14. Verification: tests written in language, built by AI, checked by humans</a></li>
+  <li><a href="#s15">15. The continuous test environment</a></li>
+  <li><a href="#s16">16. Operations and the observability loop</a></li>
+  <li><a href="#s17">17. Autonomy tiers and the permission model</a></li>
+
+  <li class="tocpart"><a href="#part4">Part IV: People and organization</a></li>
+  <li><a href="#s18">18. Human roles</a></li>
+  <li><a href="#s19">19. Hiring and keeping judgment sharp</a></li>
+  <li><a href="#s20">20. Stack selection policy</a></li>
+
+  <li class="tocpart"><a href="#part5">Part V: Governance, economics, resilience</a></li>
+  <li><a href="#s21">21. Economics and metrics</a></li>
+  <li><a href="#s22">22. Failure modes and safeguards</a></li>
+
+  <li class="tocpart"><a href="#part6">Part VI: Applying AICD</a></li>
+  <li><a href="#s24">23. Starting a new product under AICD</a></li>
+  <li><a href="#s25">24. Migrating an existing product into AICD</a></li>
+
+  <li class="tocpart"><a href="#part7">Part VII: Deep dives</a></li>
+  <li><a href="#s26">25. Memory service: implementation model</a></li>
+  <li><a href="#s27">26. Operating several products with one team</a></li>
+  <li><a href="#s28">27. Security and compliance in depth</a></li>
+  <li><a href="#s29">28. The fleet dashboard</a></li>
+  <li><a href="#s30">29. Evolving the methodology: the extension process</a></li>
+  <li><a href="#s31">30. Calibration procedures</a></li>
+
+  <li class="tocpart"><a href="#part8">Part VIII: Extensions and profiles</a></li>
+  <li><a href="#s31">31. Simulation personas and finding quality</a></li>
+  <li><a href="#s32">32. Agent instruction design</a></li>
+  <li><a href="#s33">33. Design in the loop</a></li>
+  <li><a href="#s34">34. The reference organizational repository</a></li>
+  <li><a href="#s35">35. Profile: products with mobile clients</a></li>
+  <li><a href="#s36">36. Profile: operating without live telemetry</a></li>
+  <li><a href="#s37">37. Profile: regulated domains</a></li>
+  <li><a href="#s38">38. Profile: the single operator</a></li>
+  <li><a href="#s39">39. Lessons from the first application</a></li>
+  <li><a href="#s40">40. Open questions and next explorations</a></li>
+
+  <li class="tocpart"><a href="#appx">Appendices</a></li>
+  <li><a href="#a1">A. Templates</a></li>
+  <li><a href="#a2">B. Glossary</a></li>
+  <li><a href="#a3">C. Document history</a></li>
+  <li><a href="#author">About the author</a></li>
+</ol>
+</div>
+
+<div class="part" id="part1">
+  <div class="label">Part I</div>
+  <h1 class="parttitle">Understanding AICD</h1>
+  <p class="lead">This part is written for everyone: founders, managers, product people, investors and the engineers who will work inside the methodology. It explains why AICD exists, what it is, and what it asks of the humans who use it. No technical background is required.</p>
+</div>
+
+<h1 id="s1"><span class="num">1</span>Why a new methodology</h1>
+
+<p>Every software development methodology of the last forty years was designed around one scarcity: the time of skilled humans writing code. Waterfall planned that time in advance. Agile and Scrum sliced it into sprints and estimated it in story points. Daily standups, retrospectives, velocity charts and backlogs all exist to coordinate and protect a resource that was expensive, slow, and hard to hire.</p>
+
+<p>That scarcity is disappearing. A modern AI coding agent, given a clear description of what should exist, produces working software in hours, in any well-documented programming language, at a quality level that most working developers do not reach. It writes the tests, reads the error logs, fixes what it broke, and documents what it did. The cost of producing code has collapsed.</p>
+
+<p>When the scarce resource disappears, the methodology built around it stops making sense. Teams that keep Scrum and simply add an AI assistant get a faster version of the old bottleneck, not a new way of working. The real question is: once producing code is cheap, where does the difficulty go?</p>
+
+<div class="box">
+  <div class="t">Where the difficulty moves</div>
+  <p><strong>Specification.</strong> Describing precisely what should exist, including edge cases, failure modes and security expectations. The AI builds exactly what is described; an imprecise description produces a precise implementation of the wrong thing.</p>
+  <p><strong>Verification.</strong> Proving, with confidence, that what was built is correct, secure, performant, and does not break what already worked. When humans no longer read most of the code, verification must happen at the level of behavior and evidence.</p>
+  <p><strong>Decision.</strong> Choosing the architecture, the technology stack, the infrastructure, and what is worth building next. These are judgments about trade-offs, risk and business value, and they remain human.</p>
+</div>
+
+<p>AICD is a methodology designed around these three new bottlenecks rather than the old one. It treats code as a manufactured output, the way a factory treats a finished part, and it puts the humans where their judgment matters: at the specification, at the control points, and at the decisions.</p>
+
+<h2>The situation that produced AICD</h2>
+<p>AICD was not designed in the abstract. It comes from the experience of building several production SaaS products end to end with AI coding agents, deploying them to real users, and then facing the question every founder in that position faces: how do you build a team to maintain and grow software that no human wrote? The traditional answer (hire developers, give them the repository, run sprints) fails immediately. The developers cannot work faster than the agent that built the product, and the moment they start hand-editing generated code the product becomes a hybrid that neither the humans nor the agents fully understand.</p>
+<p>The answer AICD proposes is different: build a team of experienced engineers who never write code, and give them a complete AI development organization to direct. The engineers specify, verify, decide and supervise. The AI builds, tests, operates and documents. The methodology defines how these two sides work together safely, on real products, at production quality.</p>
+
+<h1 id="s2"><span class="num">2</span>AICD in one page</h1>
+
+<p>Artificial Intelligence Centered Development is a methodology in which a complete software development team is reproduced with AI agents, each with its own role and its own context, and supervised by a small team of experienced human engineers who act as specifiers, verifiers, decision-makers and monitors.</p>
+
+<h3>What the AI does</h3>
+<ul>
+  <li><strong>Builds</strong> the software from written specifications, on isolated branches, through pull requests.</li>
+  <li><strong>Tests</strong> it, from acceptance criteria written by humans in plain language, across every test type: unit, integration, end-to-end, security, load, chaos and simulation.</li>
+  <li><strong>Operates</strong> it, watching production monitoring continuously, classifying errors, opening tickets, and fixing what it is authorized to fix.</li>
+  <li><strong>Documents</strong> it, keeping the specification synchronized with the code after every change.</li>
+  <li><strong>Reviews</strong> its own work, with a lead agent that checks the coder agents against the specification and escalates architectural questions to humans.</li>
+</ul>
+
+<h3>What the humans do</h3>
+<ul>
+  <li><strong>Specify:</strong> write the product intent, the architecture decisions and the acceptance criteria, in collaboration with the AI.</li>
+  <li><strong>Verify:</strong> check that the test plan covers everything the specification demands, and approve pull requests based on evidence, not on reading every line.</li>
+  <li><strong>Decide:</strong> approve tickets that change behavior, architecture, data, security or cost; choose the stack; arbitrate escalations.</li>
+  <li><strong>Supervise:</strong> watch the fleet of agents, the production systems and the costs, and intervene when something drifts.</li>
+</ul>
+
+<h3>What the humans never do</h3>
+<p>Humans do not write production code and do not write test code. This is not a preference; it is a structural rule. The moment a human edits generated code by hand, the specification stops being the source of truth, and the agents lose the ability to reason about the system. Humans remain developers in the full sense of the word: they read code fluently in any language, they understand system design deeply, and they are hired for exactly that. They simply do not type the implementation.</p>
+
+<div class="box rule">
+  <div class="t">The one-sentence version</div>
+  <p>AICD takes a complete development team, automates every producing role with AI, and repositions the humans as supervisors, controllers and co-architects of the system.</p>
+</div>
+
+<h1 id="s3"><span class="num">3</span>Founding principles</h1>
+
+<p>These principles are the fixed base of AICD. Everything else in this document is a consequence of them, and every future extension of the methodology must be compatible with them.</p>
+
+<div class="principle"><div class="n">1</div><div class="body"><b>Humans never write production code or tests.</b>Humans specify, verify, decide and monitor. Producing code and tests is entirely delegated to AI agents. Human ability to read and judge code remains mandatory.</div></div>
+
+<div class="principle"><div class="n">2</div><div class="body"><b>The specification is the source of truth.</b>Code is a generated artifact of the specification. If a behavior is not in the specification, it should not be in the system. If the code and the specification disagree, the specification is corrected first, and then the code is regenerated to match.</div></div>
+
+<div class="principle"><div class="n">3</div><div class="body"><b>Every change enters through git under a defined workflow.</b>No exception, human or agent. Version control is the spine of the methodology: it is the audit trail, the control point, and the rollback mechanism.</div></div>
+
+<div class="principle"><div class="n">4</div><div class="body"><b>The stack is chosen per project, on merit, and recorded.</b>Technologies are selected from mature, documented, production-proven options because they deliver the best result for the project, never because they are popular. Every selection is recorded in an architecture decision record.</div></div>
+
+<div class="principle"><div class="n">5</div><div class="body"><b>Nothing ships without human verification.</b>A human who understands the system design approves every behavioral change, based on the test plan, the coverage evidence and the agent's report. Reading every line is not required; understanding what was proven is.</div></div>
+
+<div class="principle"><div class="n">6</div><div class="body"><b>Production is observed continuously and feeds the specification.</b>Errors, usage signals and performance data flow back into tickets, then into the specification and the acceptance criteria. Incidents become permanent coverage, not one-off patches.</div></div>
+
+<div class="principle"><div class="n">7</div><div class="body"><b>Every producing agent is separated from the agent that judges it.</b>The agent that writes code is never the agent that decides whether it is correct. Coders, reviewers, testers and operators run with separate roles, separate contexts and separate permissions.</div></div>
+
+<div class="principle"><div class="n">8</div><div class="body"><b>The methodology is model-agnostic and grows with model intelligence.</b>AICD depends on no specific AI vendor or model. More capable models must make the methodology easier to run, never break it. Structures that exist for control (tickets, tiers, reviews) remain regardless of how smart the agents become.</div></div>
+
+<h1 id="s4"><span class="num">4</span>What stays, what changes</h1>
+
+<p>AICD does not discard software engineering. It keeps the disciplines and changes the artifacts, the speed and the division of labor. The table below maps the traditional practices onto their AICD counterpart.</p>
+
+<table>
+  <tr><th style="width:30%">Traditional practice</th><th style="width:35%">What it was for</th><th>In AICD</th></tr>
+  <tr><td>Sprints, story points, velocity</td><td>Coordinating and estimating scarce human coding time</td><td>Removed. Work flows continuously, ticket by ticket. Cost is measured in tokens and human approval time, not in estimated effort.</td></tr>
+  <tr><td>Daily standup, retrospective</td><td>Synchronizing humans who cannot share a brain</td><td>Replaced by the fleet dashboard, the human review queue with a fixed cadence, and human-owned post-mortems.</td></tr>
+  <tr><td>Git, branching, pull requests</td><td>Coordinating changes and keeping history</td><td>Kept and strengthened. Becomes the central control point. Agents produce many more changes than humans did; the workflow is stricter, not looser.</td></tr>
+  <tr><td>UML, Merise, domain modeling</td><td>Thinking about structure and data before building</td><td>Kept as thinking tools. Entity models, state machines and sequence diagrams live in the specification in text or Mermaid form, written with the AI, and are consumed directly by the agents.</td></tr>
+  <tr><td>Software development life cycle</td><td>Ordering requirements, design, build, test, deploy, maintain</td><td>Kept, compressed and repeated per feature. The whole cycle runs in hours per ticket instead of months per release.</td></tr>
+  <tr><td>Code review</td><td>Catching defects and design errors</td><td>Split. A lead agent reviews line by line against the specification. Humans review behavior, architecture and evidence, and read code only where risk justifies it.</td></tr>
+  <tr><td>Manual and automated testing</td><td>Proving correctness</td><td>Fully automated and expanded to simulation, chaos and continuous security testing. Humans author acceptance criteria and verify the test plan, never the test code.</td></tr>
+  <tr><td>Architecture decision records</td><td>Recording why choices were made</td><td>Central. ADRs are how humans constrain the agents and how the lead agent knows when to escalate.</td></tr>
+  <tr><td>On-call, incident response</td><td>Keeping production healthy</td><td>Agent-first. The operations agent detects, triages and, within its authorization, repairs. Humans handle escalations and own post-mortems.</td></tr>
+  <tr><td>Documentation</td><td>Explaining the system to future maintainers</td><td>Becomes the system's source code. Maintained by a documentation agent on every merge and audited for drift weekly.</td></tr>
+</table>
+
+<h1 id="s5"><span class="num">5</span>Design philosophy: open to extension, closed to modification</h1>
+
+<p>AICD is meant to be as stable as the methodologies it replaces. A team should be able to adopt it, run a serious project on it, and never need to reinvent it mid-project. To achieve that, the methodology borrows a principle from software design itself: it is open to extension and closed to modification.</p>
+
+<h3>Closed to modification</h3>
+<p>The founding principles in section 3, the five-layer architecture in section 6 and the separation of duties in section 7 are the fixed core. They are not revised when a new model is released, when a new tool appears, or when a project finds them inconvenient. A project that needs to violate them is a signal that the project is not yet ready for AICD, or that the violation should be proposed as a methodology extension, reviewed, and adopted deliberately.</p>
+
+<h3>Open to extension</h3>
+<p>Everything that depends on the current state of tooling is an extension point: which models run which agents, which observability platform is used, how the memory service is implemented, what the test environment runs on, how tickets are stored. These are documented as organizational decisions and can change without touching the core.</p>
+
+<h3>Growing with model intelligence</h3>
+<p>Every structure in AICD exists for one of two reasons: either to give humans control, or to compensate for a current limitation of the agents. The two must be kept distinct.</p>
+<ul>
+  <li><strong>Control structures</strong> (tickets, risk tiers, human approval, separation of duties, permission model, audit trail) exist so that humans remain accountable for what runs in production. They stay in place no matter how capable the models become. A smarter agent makes them cheaper to run, because fewer escalations are needed and reviews are faster, but it does not remove them.</li>
+  <li><strong>Compensation structures</strong> (attempt budgets, detailed test plans before build, drift audits, cross-model review) exist because today's agents sometimes loop, drift or share blind spots. As models improve, the parameters of these structures loosen (larger budgets, fewer audits), but the structures themselves stay available, because the cost of keeping them is small and the cost of an unnoticed regression is not.</li>
+</ul>
+<p>The practical rule: when a new model arrives, the team tunes parameters. It never removes a control structure, and it removes a compensation structure only after evidence, on a real project, that the limitation it compensated for is gone.</p>
+
+<div class="part" id="part2">
+  <div class="label">Part II</div>
+  <h1 class="parttitle">The architecture of AICD</h1>
+  <p class="lead">The structural core of the methodology: the layers the work is organized in, the agents that do the work and how they are separated, and the memory that gives every agent knowledge of the whole project.</p>
+</div>
+
+<h1 id="s6"><span class="num">6</span>The five layers</h1>
+
+<p>AICD organizes every project into five layers. Each layer has its own artifacts, its own tools and its own human role. A change to the system always travels through the layers in order: it is specified, then executed, then verified, then operated, and governance rules apply at every step.</p>
+
+<div class="layer">
+  <b class="name">Layer 1: Specification</b>
+  <div class="meta">Human-owned. The real source code of the project.</div>
+  <p>Living documents per product: product brief, architecture document, architecture decision records (ADRs), domain model, API contracts, conventions, runbooks, and the agent instruction file that tells every agent how this project works. Rule: if it is not in the specification, the agents do not build it. Code is treated as a build artifact of this layer.</p>
+</div>
+
+<div class="layer">
+  <b class="name">Layer 2: Execution</b>
+  <div class="meta">Agent-owned. Where code is produced.</div>
+  <p>Coder agents working with their tool connections (repositories, CI, documentation, ticketing), each on an isolated branch created from a ticket. Every change lands through a pull request. Agents never touch the main branch directly. A lead agent orders the work, assigns it, and reviews the result.</p>
+</div>
+
+<div class="layer">
+  <b class="name">Layer 3: Verification</b>
+  <div class="meta">Shared. Humans define what must be proven; agents prove it; humans confirm the proof is complete.</div>
+  <p>Acceptance criteria written by humans before build. Test plans, test code and continuous testing produced by agents. Security scanning, performance budgets, mutation testing. Human review focused on behavior, coverage and architecture rather than on lines of code.</p>
+</div>
+
+<div class="layer">
+  <b class="name">Layer 4: Operations</b>
+  <div class="meta">Agent-first. Humans handle escalations.</div>
+  <p>Error tracking, product analytics, logs, metrics, uptime and cost monitoring. An operations agent detects incidents and repairs within its authorization; a QA agent detects defects; a product signal agent detects usage patterns. All findings become categorized tickets. The loop closes when the fix is followed by a specification update and new acceptance criteria.</p>
+</div>
+
+<div class="layer">
+  <b class="name">Layer 5: Governance</b>
+  <div class="meta">Human-owned. The rules that make the other four layers safe.</div>
+  <p>Autonomy tiers, the permission model for agents, secrets management, the immutable audit trail of agent actions, cost tracking, and the stack selection policy. Governance is enforced by infrastructure, not by instructions in a prompt.</p>
+</div>
+
+<h1 id="s7"><span class="num">7</span>The agent team and separation of duties</h1>
+
+<p>AICD reproduces a complete development team with AI agents. The word "team" is deliberate: each agent has one role, its own instructions, its own context, and its own permissions. This is the single most important structural decision in the methodology, for the same reason it matters in human organizations: the person who does the work must not be the person who judges it.</p>
+
+<div class="box rule">
+  <div class="t">Rule: separation of duties</div>
+  <p>The agent that writes code never decides whether that code is correct. The agent that finds a defect never fixes it. The agent that deploys never changes code. Each of these roles runs in a separate context and with a separate, minimal set of permissions.</p>
+</div>
+
+<h2>The roles</h2>
+
+<table>
+  <tr><th style="width:18%">Agent</th><th style="width:40%">Responsibility</th><th>Reads</th><th>Writes</th></tr>
+  <tr><td><strong>Coder</strong></td><td>Takes one validated ticket, produces a plan, implements code and tests on its own branch, opens a pull request with a full report. Several coders run in parallel.</td><td>Product specification, conventions, its ticket, operational memory for the modules it touches</td><td>Its own branch only. Never main, never production.</td></tr>
+  <tr><td><strong>Lead / Reviewer</strong></td><td>Orders the ticket queue to avoid conflicts, assigns tickets to coders, reviews every pull request against the ticket, the specification and the ADRs, gives feedback to coders, escalates to humans when a decision is needed.</td><td>Everything in the specification and operational memory for its product, plus organizational knowledge</td><td>Review comments, ticket state, tier 0 merges only</td></tr>
+  <tr><td><strong>QA / Tester</strong></td><td>Turns human acceptance criteria into test plans, runs the continuous test environment (end-to-end, security, load, chaos, simulation), files categorized tickets with reproduction steps and evidence.</td><td>Specification, acceptance criteria, production telemetry (read only), the full defect history</td><td>Staging environment, tickets. No code repositories.</td></tr>
+  <tr><td><strong>Operations</strong></td><td>Watches production health against service level objectives, detects incidents, deploys from tags, rolls back, executes runbooks, opens incident tickets.</td><td>Runbooks, infrastructure ADRs, incident history, all telemetry</td><td>Deployments, rollbacks, infrastructure within runbooks. No code changes.</td></tr>
+  <tr><td><strong>Documentation</strong></td><td>On every merged pull request, proposes the specification update (or confirms none is needed). Runs the weekly drift audit between specification and code.</td><td>Specification, merged diffs, code</td><td>Specification pull requests</td></tr>
+  <tr><td><strong>Product signal</strong></td><td>Watches usage analytics for patterns (drop-offs, unused features, unusual behavior) and files product signal tickets for the product owner. Never files tickets for coders.</td><td>Product analytics, product brief</td><td>Product signal tickets</td></tr>
+  <tr><td><strong>Assistant</strong></td><td>The human's thinking partner for exploring new features, evaluating stacks, drafting specifications and acceptance criteria. Has broad read access and no write access to anything except drafts.</td><td>Everything the human can read</td><td>Drafts only</td></tr>
+</table>
+
+<h2>Review is three layers, not one</h2>
+<p>A second model reviewing the first is necessary and not sufficient: commercial models share training data, alignment methods and coding heuristics, so two of them can share a blind spot on concurrency, on a subtle data-loss path, or on an anti-pattern both learned as normal. AICD therefore requires that pull request review be three layers, each catching what the others cannot:</p>
+<ol>
+  <li><strong>Deterministic checks</strong> that no model can talk its way past: static analysis, type checking, structural linting, a structural diff summary of what changed (interfaces, signatures, schema, dependencies, permissions), contract checks against the interface specifications, dependency and secret scanning, and mutation testing of the tests themselves.</li>
+  <li><strong>Adversarial model review</strong> by the lead agent, on a different model than the coder, working through an explicit adversarial checklist rather than producing a summary: how could this lose data, how could this be exploited, what happens under concurrency, what happens on partial failure, what does this change that the ticket did not ask for, which test would have to be weakened for this to pass. The checklist is organizational knowledge and grows from post-mortems.</li>
+  <li><strong>Human review</strong> according to tier, reading evidence for tier 1 and the diff itself for tier 2.</li>
+</ol>
+
+<h2>Why the lead agent runs on a different model</h2>
+<p>If the coder agents and the reviewing agent share the same underlying model, they share the same blind spots, and a review by the same intelligence that produced the code is weaker than it looks. AICD requires that the lead/reviewer run on a different model family than the coders it reviews. This is cheap, and it is the closest thing to a second opinion that an automated pipeline can have. Human review of tier 2 changes provides the third opinion.</p>
+
+<h2>What is deliberately not copied from human teams</h2>
+<p>Human teams have meetings, handoffs and rituals because humans cannot share a brain. Each separation in the agent team must justify itself as a control mechanism, not as a habit. Tickets stay because they are a human control point. Pull requests stay because they are the review and audit point. Separate contexts stay because of separation of duties. A "daily standup between agents" or a "sprint planning among agents" would be theater and is not part of AICD.</p>
+
+<h1 id="s8"><span class="num">8</span>Memory architecture</h1>
+
+<p>The whole methodology assumes that the agents actually know the project: its intent, its architecture, its history, its conventions, and what has already been tried. This is the most underestimated part of running AI development at production quality. An agent with a shallow or stale view of the project produces confident, well-written code that quietly contradicts decisions made months earlier.</p>
+
+<p>AICD therefore defines a unified global memory, structured in four layers and served to each agent through a scoped memory service. The distinction between the layers is who writes them and how they change.</p>
+
+<h2>The four layers of memory</h2>
+
+<table>
+  <tr><th style="width:22%">Layer</th><th style="width:30%">Contents</th><th style="width:24%">Where it lives</th><th>How it changes</th></tr>
+  <tr><td><strong>1. Canonical knowledge</strong><br><span class="small">per product</span></td><td>Product brief, architecture, ADRs, domain model, API contracts, conventions, runbooks, agent instruction file</td><td>The product repository, versioned in git</td><td>Only through pull requests, under the same risk tiers as code. This is the source of truth.</td></tr>
+  <tr><td><strong>2. Organizational knowledge</strong><br><span class="small">whole company</span></td><td>The AICD methodology itself, cross-product conventions, stack ADRs, security policy, escalation rules, agent role definitions</td><td>One organizational repository, versioned in git</td><td>Through pull requests, approved by the architect and governance roles. Read by every agent in every product.</td></tr>
+  <tr><td><strong>3. Operational memory</strong><br><span class="small">per product</span></td><td>Tickets and outcomes, incidents and post-mortems, escalation decisions, approaches that were tried and failed, agent closing reports</td><td>Append-only structured log</td><td>Agents write freely as they work. Never edited, only appended. This is where "we tried that and it broke X" lives.</td></tr>
+  <tr><td><strong>4. Working memory</strong><br><span class="small">per agent, per task</span></td><td>The agent's scratchpad for the current ticket: plans, intermediate reasoning, partial results</td><td>Ephemeral</td><td>Discarded when the ticket closes, except what the agent promotes into its closing report in layer 3.</td></tr>
+</table>
+
+<h2>The memory service</h2>
+<p>On top of the four layers sits a memory service, exposed to the agents as a tool connection. It has three jobs:</p>
+<ol>
+  <li><strong>Index</strong> layers 1 to 3: full-text search, semantic search, and a structural map of each code repository (modules, dependencies, entry points).</li>
+  <li><strong>Enforce scopes</strong>: each agent role sees only what its role needs, as defined in the table in section 7. Scopes are enforced by the service, not by asking the agent to ignore what it should not see.</li>
+  <li><strong>Answer task-oriented questions</strong>: "what do I need to know to work on ticket 482" returns the relevant specification sections, the relevant ADRs, the related past tickets and the code map of the affected modules, instead of handing over the entire project and hoping the agent finds the right parts.</li>
+</ol>
+
+<h2>The sanitization barrier between telemetry and memory</h2>
+<p>Production data is untrusted input (section 16). If raw error messages, stack traces, user content or session replays were appended to operational memory as they arrive, an injected string in a crash log would become part of the context served to coders and reviewers on unrelated tickets, indefinitely. AICD therefore places a deterministic barrier between layer 4 and layer 3:</p>
+<ul>
+  <li>Only <strong>typed, structured records</strong> enter operational memory and its index: ticket, category, severity, the journey step, the error class, a normalized fingerprint, affected module, counts, timestamps. Fields are parsed into a fixed schema by deterministic code, never summarized into memory by a model.</li>
+  <li><strong>Raw evidence</strong> (full traces, payloads, replays, user content) is stored out of band in an evidence store, referenced from the record by identifier, never indexed for retrieval, and shown to a human or an agent only on explicit request for that ticket, quoted and labeled as untrusted.</li>
+  <li>Free-text fields that must be kept (an error message string, for example) are length-capped, stripped of anything that is not part of the declared format, and stored with a provenance tag that the retrieval API surfaces to every consumer.</li>
+  <li>The barrier is code, versioned in the organizational repository, with its own tests, including planted injection strings that must be rejected.</li>
+</ul>
+
+<h2>Keeping memory alive</h2>
+<p>Memory that is not maintained is worse than no memory, because agents trust it. Two mechanisms keep it honest:</p>
+<ul>
+  <li><strong>Documentation agent on every merge.</strong> Each merged pull request triggers a proposed update to canonical knowledge, or an explicit statement that no update is needed. The proposal is itself a pull request.</li>
+  <li><strong>Weekly drift audit.</strong> The documentation agent compares the canonical documents with the actual code and flags every divergence to a human. Every canonical document carries a "last verified against code" date.</li>
+</ul>
+
+<div class="box">
+  <div class="t">Why git-backed markdown and not only a database</div>
+  <p>Layers 1 and 2 are kept as versioned text in git on purpose. It gives history, review through pull requests, diffs a human can read, and independence from any single memory tool. The index in the memory service is derived from these files and can be rebuilt at any time. The database is a cache; the repository is the truth.</p>
+</div>
+
+<div class="part" id="part3">
+  <div class="label">Part III</div>
+  <h1 class="parttitle">How work flows</h1>
+  <p class="lead">The operational heart of AICD: how a need becomes a specification, a ticket, a branch, a verified pull request, a deployment and an observed behavior, and what the humans and the agents do at every step.</p>
+</div>
+
+<h1 id="s9"><span class="num">9</span>The specification system</h1>
+
+<p>Because the specification is the source of truth, it needs the discipline that source code has: a fixed structure, clear ownership, versioning and review. Every product has the same set of documents. Templates are organizational (layer 2 of memory); contents are per product (layer 1).</p>
+
+<table>
+  <tr><th style="width:24%">Document</th><th style="width:20%">Owner</th><th>Purpose</th></tr>
+  <tr><td>Product brief</td><td>Product owner</td><td>Who the product is for, the problem it solves, what is in and out of scope, business constraints. The boundary inside which behavioral tickets can be built without a decision.</td></tr>
+  <tr><td>Architecture document</td><td>Architect</td><td>System overview, components, data flows, deployment topology, update strategy, non-functional targets (performance, availability, security). Drafted with the AI, decided by the human.</td></tr>
+  <tr><td>Architecture decision records</td><td>Architect</td><td>One record per significant decision: context, options considered, decision, consequences. The lead agent treats every ADR-covered area as an escalation trigger.</td></tr>
+  <tr><td>Domain model</td><td>Architect (generated by AI, reviewed)</td><td>Entities, relationships, invariants, state machines. Written in text and Mermaid so it is both human-readable and agent-consumable.</td></tr>
+  <tr><td>API and interface contracts</td><td>Architect (generated by AI, reviewed)</td><td>Public and internal interfaces, event schemas, error semantics. Changing a contract is always a decisional ticket.</td></tr>
+  <tr><td>Acceptance criteria</td><td>Verification lead</td><td>Per feature and per ticket: observable behaviors, edge cases, failure modes, security expectations. The one artifact humans author fully (with AI assistance). Detailed in section 14.</td></tr>
+  <tr><td>Conventions and agent instructions</td><td>Architect</td><td>Coding conventions, project structure, how to run tests, what the agents must always and never do in this repository.</td></tr>
+  <tr><td>Runbooks</td><td>Reliability and governance</td><td>Operational procedures the operations agent is allowed to execute: deploy, rollback, scale, rotate, recover.</td></tr>
+</table>
+
+<h3>Rules of the specification system</h3>
+<ul>
+  <li>Specification changes are pull requests, reviewed and merged under the same risk tiers as code.</li>
+  <li>Every document carries a "last verified against code" date maintained by the drift audit.</li>
+  <li>A ticket that changes behavior must reference the specification section it implements or modifies. A ticket with no specification anchor is either a defect (the specification was violated) or a decisional ticket (the specification must change first).</li>
+</ul>
+
+<h1 id="s10"><span class="num">10</span>Feature flow: from idea to observed behavior</h1>
+
+<p>AICD replaces sprints with a continuous flow. Each feature, fix or improvement travels the same path, and the whole software development life cycle runs inside it, in hours or days rather than months.</p>
+
+<div class="flow">
+  <span>Specify</span><span class="arrow">&rarr;</span><span>Plan</span><span class="arrow">&rarr;</span><span>Build</span><span class="arrow">&rarr;</span><span>Verify</span><span class="arrow">&rarr;</span><span>Ship</span><span class="arrow">&rarr;</span><span>Observe</span><span class="arrow">&rarr;</span><span>Feed back</span>
+</div>
+
+<table>
+  <tr><th style="width:14%">Step</th><th style="width:43%">What happens</th><th>Who</th></tr>
+  <tr><td>Specify</td><td>The need is written into the product brief, the architecture and the acceptance criteria. New features are explored with the assistant agent: options, stacks, infrastructure, trade-offs. The human decides.</td><td>Product owner, architect, verification lead, with the assistant agent</td></tr>
+  <tr><td>Plan</td><td>The ticket is created and categorized. The coder agent produces an implementation plan and the QA agent produces a test plan. Both are reviewed before any code exists.</td><td>Lead agent proposes, humans approve according to category</td></tr>
+  <tr><td>Build</td><td>The coder implements code and tests on its branch, commits with traceability, opens a pull request with a full report.</td><td>Coder agent</td></tr>
+  <tr><td>Verify</td><td>CI runs every gate. The lead agent reviews line by line. The human reviews the coverage matrix, the CI report and the agent report, and approves according to the risk tier.</td><td>Lead agent, then human according to tier</td></tr>
+  <tr><td>Ship</td><td>Merge to main, tag, deploy from the tag. Rollback is always "redeploy the previous tag".</td><td>Operations agent</td></tr>
+  <tr><td>Observe</td><td>Error tracking, analytics, metrics and the continuous test environment watch the change in production and staging.</td><td>Operations, QA and product signal agents</td></tr>
+  <tr><td>Feed back</td><td>Findings become categorized tickets. Every fix ends with a specification update and new acceptance criteria that would have caught the issue.</td><td>Documentation agent, verification lead</td></tr>
+</table>
+
+<h1 id="s11"><span class="num">11</span>Ticket lifecycle and categories</h1>
+
+<p>Tickets are the control point of AICD. Every unit of work, whether requested by a human or discovered by an agent, is a ticket. Because agents that run continuously produce far more findings than a human team ever would, tickets must be categorized so that human attention goes only where a decision is actually needed.</p>
+
+<h2>The four categories</h2>
+
+<table>
+  <tr><th style="width:17%">Category</th><th style="width:40%">Definition</th><th style="width:22%">Examples</th><th>Human involvement</th></tr>
+  <tr><td><strong>Auto</strong></td><td>A clear defect, reproducible, whose fix stays entirely within the current specification.</td><td>Crash, failing background job, flaky test, dependency patch, log noise</td><td>None before work. Goes straight to the coder queue. Reviewed by the lead agent; merged under tier 0 or 1 rules.</td></tr>
+  <tr><td><strong>Behavioral</strong></td><td>A fix or improvement that changes observable behavior but stays inside the product brief and the architecture.</td><td>Validation message change, new filter on an existing list, performance optimization that changes a response shape</td><td>Coder may build immediately. A human approves the pull request.</td></tr>
+  <tr><td><strong>Decisional</strong></td><td>Touches the specification, the architecture, the data model, security, external cost, a contract, or any tier 2 area.</td><td>New entity, new payment flow, schema migration, new external service, change to authentication</td><td>A human approves the ticket before any work starts. Usually handled in pairing mode.</td></tr>
+  <tr><td><strong>Product signal</strong></td><td>Not a defect: an insight about usage or value.</td><td>Users abandon at step 3 of onboarding; a feature is never used; a segment behaves unexpectedly</td><td>Goes to the product owner only. Never enters the coder queue directly.</td></tr>
+</table>
+
+<div class="box rule">
+  <div class="t">Rule: upgrade only</div>
+  <p>The QA agent proposes the category when it files a ticket. The lead agent may upgrade a category (Auto to Behavioral, Behavioral to Decisional) but never downgrade it. Only a human can downgrade. This guarantees that an agent can always make a ticket safer and can never make it riskier on its own.</p>
+</div>
+
+<h2>Lifecycle</h2>
+<div class="flow">
+  <span>Filed</span><span class="arrow">&rarr;</span><span>Categorized</span><span class="arrow">&rarr;</span><span>Validated</span><span class="arrow">&rarr;</span><span>Queued</span><span class="arrow">&rarr;</span><span>In progress</span><span class="arrow">&rarr;</span><span>In review</span><span class="arrow">&rarr;</span><span>Merged</span><span class="arrow">&rarr;</span><span>Deployed</span><span class="arrow">&rarr;</span><span>Closed</span>
+</div>
+<p>"Validated" means the ticket is authorized to be worked: automatic for Auto and Behavioral, human-approved for Decisional. "Closed" requires the documentation agent's specification update (or its explicit "no change needed") and, for defects, new acceptance criteria that cover the case. A ticket cannot be closed with a fix alone.</p>
+
+<h2>Mandatory ticket contents</h2>
+<ul>
+  <li>Category and proposed risk tier</li>
+  <li>Specification anchor: the section implemented, violated or to be modified</li>
+  <li>For defects: reproduction steps, evidence (logs, traces, screenshots, session replays), severity, affected users if known</li>
+  <li>For features: link to acceptance criteria</li>
+  <li>Budget: maximum attempts, wall-clock time and tokens before the coder must stop and report</li>
+</ul>
+
+<h1 id="s12"><span class="num">12</span>Working validated tickets: fleet mode, pairing mode, escalation</h1>
+
+<p>Once a ticket is validated, there are two ways to work it. They are two modes of the same pipeline, not competing options.</p>
+
+<h2>Fleet mode (default)</h2>
+<p>Validated tickets enter a queue. The lead agent orders the queue to minimize conflicts, since two coders modifying the same module at the same time is the main practical problem of parallel agents. It assigns each ticket to a coder agent, which works on its own branch. When the coder opens a pull request, the lead agent reviews it against the ticket, the specification and the ADRs, sends feedback or questions back to the coder, and, once satisfied, either merges (tier 0) or hands to a human (tier 1 and 2). Humans see the fleet through a dashboard: queue depth, tickets in progress, blocked items, pull requests awaiting approval, cost.</p>
+
+<h3>Conflict handling at scale</h3>
+<p>Ordering the queue by hand is enough for a handful of coders and becomes a bottleneck beyond that. AICD does not rely on serialization; it relies on declared scope. Every implementation plan declares the modules it will touch. The lead agent maintains a lock table of modules currently claimed by in-flight tickets and refuses to start a ticket whose declared scope overlaps one already claimed; non-overlapping tickets start in parallel without any ordering decision. A coder that discovers mid-ticket that it must touch an undeclared module stops and re-declares, which is an escalation trigger if the module is claimed. Merges go through a merge queue that rebases and re-runs the gates before landing. When one product's ticket volume exceeds what one lead can review, the lead role is partitioned by product area, each instance owning a disjoint set of modules, with a single review queue for humans.</p>
+
+<h2>Pairing mode</h2>
+<p>A human drives a coding agent directly, in a terminal or an agentic coding tool, on one ticket. The human watches the agent work, redirects it when it takes a wrong approach, and co-designs as it goes. Pairing mode is reserved for three cases:</p>
+<ul>
+  <li>Decisional tickets and tier 2 changes (authentication, money, data schema, infrastructure)</li>
+  <li>Tickets escalated by the lead agent</li>
+  <li>New architecture work where the human is co-designing anyway</li>
+</ul>
+<p>Pairing is not the default because a human watching one agent per ticket makes the team size scale with the workload, which is exactly what AICD removes.</p>
+
+<h2>The escalation protocol</h2>
+<p>The key design object is neither mode; it is the protocol by which an agent stops and asks. Agents do sometimes get stuck in an approach, and the methodology handles this structurally rather than by hoping a human notices.</p>
+
+<div class="box">
+  <div class="t">Budgets and the blocked report</div>
+  <p>Every ticket carries a budget: attempts, wall-clock time, tokens. When any limit is exceeded, the coder stops, writes a blocked report (what it tried, why it believes the approaches fail, what it would try differently, what it needs from a human) and hands off. It never keeps grinding. Blocked reports are written to operational memory so the next attempt starts informed.</p>
+</div>
+
+<div class="box">
+  <div class="t">Lead agent escalation triggers</div>
+  <p>The lead agent must escalate to a human, and may not decide alone, when any of the following occurs: a change touches an area covered by an ADR; a test had to be modified or removed for the build to pass; a new dependency or external service is needed; the coder's plan contradicts the specification; two tickets in progress conflict; a change would alter a public or internal contract; the coder's report contains a security concern. Each escalation is a question addressed to a human, with the lead agent's recommendation attached.</p>
+</div>
+
+<p>Blocked and escalated items land in a human review queue that is processed at a fixed cadence (for example twice a day). Only incidents interrupt a human outside the cadence. This protects the humans from becoming an always-on bottleneck while keeping the agents from ever making a decision that belongs to a person.</p>
+
+<h1 id="s13"><span class="num">13</span>Git and release workflow</h1>
+
+<p>Git is the spine of AICD. Because agents produce many more changes than a human team, the workflow is stricter, not looser. Every rule below applies equally to agents and humans.</p>
+
+<h2>Branches</h2>
+<ul>
+  <li><code>main</code> is always deployable and protected. No direct pushes, by anyone.</li>
+  <li>One branch per ticket, created from main: <code>feat/&lt;ticket&gt;</code>, <code>fix/&lt;ticket&gt;</code>, <code>ops/&lt;ticket&gt;</code>, <code>spec/&lt;ticket&gt;</code>. An agent works only inside its own branch.</li>
+  <li>No long-lived development or release branches. Work that is not ready stays in its branch or ships behind a feature flag.</li>
+  <li>Branches are rebased on main before the pull request is marked ready, so conflicts are resolved by the coder, not by the reviewer.</li>
+</ul>
+
+<h2>Commits</h2>
+<p>Agents commit often, using Conventional Commits. Every commit message references the ticket and the specification section it implements. This is the audit trail: any line of code can be traced to a commit, to a ticket, to a paragraph of specification, to a human decision.</p>
+
+<h2>Pull requests: the control point</h2>
+<p>Every pull request carries, without exception:</p>
+<ul>
+  <li>Link to the ticket and the specification anchor</li>
+  <li>The agent's plan, written before implementation, and any deviation from it</li>
+  <li>The list of tests added or modified, and why those tests</li>
+  <li>The coverage matrix (criterion to test mapping, see section 14)</li>
+  <li>What was deliberately not tested, and why</li>
+  <li>Self-assessed risk tier</li>
+  <li>For tier 2: a written rollback plan</li>
+  <li>CI green: lint, type check, full test suite, mutation score threshold, security scan, build</li>
+</ul>
+
+<h2>Merge policy by risk tier</h2>
+<table>
+  <tr><th style="width:12%">Tier</th><th style="width:40%">Scope</th><th>Merge requirement</th></tr>
+  <tr><td><strong>Tier 0</strong></td><td>Documentation, logs, copy, dependency patch versions, formatting, test-only additions</td><td>CI green and lead agent approval. Auto-merge allowed.</td></tr>
+  <tr><td><strong>Tier 1</strong></td><td>Feature and fix code that does not touch a tier 2 area and does not change a contract</td><td>CI green, lead agent approval, one human verifier who reviews the plan, the coverage matrix, the report and the diff summary.</td></tr>
+  <tr><td><strong>Tier 2</strong></td><td>Authentication and authorization, payments and anything touching money, data schema and migrations, infrastructure, secrets, external contracts, anything covered by an ADR</td><td>CI green, lead agent approval, two humans, written rollback plan, and at least one human reads the diff itself.</td></tr>
+</table>
+
+<h2>Tags, releases and rollback</h2>
+<ul>
+  <li>Every deployment is made from a tag on main. The changelog is generated from the commits.</li>
+  <li>Rollback is always "redeploy the previous tag". There is no hotfix directly on main; a hotfix is a fix ticket that goes through the normal flow with an elevated priority.</li>
+  <li>Database migrations are written to be backward compatible with the previous tag, so a rollback never requires a data rollback.</li>
+</ul>
+
+<h1 id="s14"><span class="num">14</span>Verification: tests written in language, built by AI, checked by humans</h1>
+
+<p>In a system where humans do not read most of the code, the test suite and the observability stack are the only things that prove the software does what the specification says. Verification is therefore where human time goes in AICD, and the methodology is careful about where in the process that time is spent.</p>
+
+<h2>The problem verification must solve</h2>
+<p>A human who does not read test code cannot judge a test suite by reading it. So the human verification must happen one level up: on the mapping between what the specification demands and what the tests prove, rather than on the tests themselves. This is what makes it possible for a verifier with deep system design knowledge to sign off on a suite of tests without reading a line of them, and makes it impossible for an agent to quietly weaken a test without a visible signal.</p>
+
+<h2>The verification cycle</h2>
+<ol>
+  <li><strong>Acceptance criteria (human, with AI assistance).</strong> Before any build, the verification lead writes the acceptance criteria for the ticket in plain language, working with the assistant agent to find edge cases and failure modes. Each criterion has an identifier, a precondition, an action, an expected observable result, and a type (functional, security, performance, resilience, simulation). This structure matters: free prose is fine for thinking, but the final artifact must be structured enough for a machine to check the mapping to tests.</li>
+  <li><strong>Test plan (QA agent).</strong> The QA agent produces a test plan: a table with one row per criterion, the test type that will cover it (unit, integration, end-to-end, security, load, chaos, simulation), and the name of the test that will be written. No code exists yet.</li>
+  <li><strong>Test plan verification (human).</strong> The verification lead checks the plan: is every criterion covered, are the edge cases present, is anything declared untestable, and is the level appropriate. An authorization rule covered only by a unit test is a red flag; a payment flow with no end-to-end test is a rejection.</li>
+  <li><strong>Build (coder agent).</strong> The coder writes tests and code, in the project's language, from the plan. CI enforces the mapping: every criterion identifier must appear in at least one test, and every test must map to a criterion, or it is flagged.</li>
+  <li><strong>Evidence review (human, at pull request).</strong> The verifier reads the coverage matrix, the CI report, the mutation score, and the agent's list of what it did not test and why. Mutation testing runs in CI so the team knows the tests actually fail when the code is broken, not only that they pass when it works.</li>
+</ol>
+
+<div class="box rule">
+  <div class="t">Rule: modified tests always escalate</div>
+  <p>Any pull request in which an existing test was modified, weakened or removed triggers an escalation to a human, whatever the tier. Passing tests by changing tests is the most common way an agent hides a regression, and the methodology treats it as such.</p>
+</div>
+
+<div class="box rule">
+  <div class="t">Rule: a gate is installed only when it has been seen to fail</div>
+  <p>A gate that has only ever been observed passing is not installed. Every gate (a CI check, a coverage matrix checker, a mutation threshold, a liveness check, a permission rule) enters service only after a demonstration on a planted defect: it passes on a clean tree, it fails on the planted defect, and the failure is visible where a human would look. The demonstration is recorded in the ticket that installed the gate. The recurring defect class this rule exists for is "present but reporting nothing": a checker that exits successfully on every input, a workflow file whose trigger never fires, a test stage that a deploy path bypasses. Each of these reads as protection in every document that cites it while protecting nothing.</p>
+</div>
+
+<h2>Test types in AICD</h2>
+<p>AICD does not limit itself to the classical pyramid. All of the following are part of the standard test plan vocabulary, and the QA agent is expected to propose the right mix for each ticket:</p>
+<table>
+  <tr><th style="width:22%">Type</th><th>What it proves</th></tr>
+  <tr><td>Unit</td><td>Individual functions and modules behave as specified in isolation</td></tr>
+  <tr><td>Integration</td><td>Components work together across their real interfaces (database, queues, external APIs with contract stubs)</td></tr>
+  <tr><td>End-to-end</td><td>Complete user journeys succeed through the real interface</td></tr>
+  <tr><td>Security</td><td>Static analysis, dependency audit, dynamic scanning, and periodic AI-driven penetration attempts within a defined scope</td></tr>
+  <tr><td>Load and performance</td><td>The system meets its non-functional targets under load profiles derived from real usage</td></tr>
+  <tr><td>Chaos and resilience</td><td>The system degrades gracefully when a service dies, the database slows, a token expires or a dependency times out</td></tr>
+  <tr><td>Simulation</td><td>Synthetic users with personas modeled on real segments use the product in many parallel runs, revealing behaviors no scripted test would</td></tr>
+  <tr><td>Property-based and fuzzing</td><td>Invariants hold across generated inputs; parsers and interfaces survive malformed data</td></tr>
+  <tr><td>Contract</td><td>Public and internal interfaces have not changed in ways that break consumers</td></tr>
+  <tr><td>Mutation</td><td>The test suite itself is effective: introduced faults are detected</td></tr>
+</table>
+
+<h1 id="s15"><span class="num">15</span>The continuous test environment</h1>
+
+<p>A human QA team tests when it is asked to. The AICD QA agent tests all the time. Each product has a persistent staging environment that mirrors production infrastructure, and the QA agent lives in it.</p>
+
+<h3>What runs there</h3>
+<ul>
+  <li>Seeded synthetic data and anonymized replay of production traffic</li>
+  <li>End-to-end journeys, on every deploy and on a schedule</li>
+  <li>Load profiles derived from real product analytics, so the load test reflects how users actually behave</li>
+  <li>Security scanning and periodic penetration attempts, scoped and logged</li>
+  <li>Chaos experiments: killing services, slowing the database, expiring credentials, cutting a third-party dependency</li>
+  <li>Simulations with synthetic user personas that behave like the product's real segments</li>
+</ul>
+
+<h3>Cadence: event-driven, not permanent</h3>
+<p>"Continuous" means the environment is always available and always current, not that every test runs all the time. Simulation, load and chaos runs are expensive and produce the same findings if repeated on an unchanged system, so they are triggered by significant modifications rather than by the clock. A run is exhaustive: the QA agent launches as many simulations in parallel as needed, collects every issue it can find, files them, and then stops until the next trigger. The scheduled part of the environment is limited to cheap checks (health, smoke journeys, dependency and security scans).</p>
+<table>
+  <tr><th style="width:34%">Test family</th><th>Triggered by</th></tr>
+  <tr><td>Smoke and end-to-end journeys</td><td>Every deploy to staging, every deploy to production</td></tr>
+  <tr><td>Security scanning</td><td>Every pull request (static), every deploy (dynamic), and a scheduled dependency audit</td></tr>
+  <tr><td>Load and performance</td><td>Any change to a hot path, a data access pattern, infrastructure, or a non-functional target; any new endpoint</td></tr>
+  <tr><td>Chaos and resilience</td><td>Any change to infrastructure, to a runbook, to a third-party dependency, or to error handling</td></tr>
+  <tr><td>Simulation with personas</td><td>Any significant modification (see below); never for cosmetic changes</td></tr>
+  <tr><td>Penetration attempts</td><td>Any tier 2 change and a scheduled periodic run</td></tr>
+</table>
+<p>A <strong>significant modification</strong> is any merged change that alters a user journey, a business rule, a data model, a contract, a permission, an integration, or a non-functional characteristic. Changes to copy, styling, layout, logs, documentation or dependency patch versions are not significant. The lead agent marks the significance on each merged pull request from the ticket category and the affected modules, and the QA agent uses that mark as its trigger. The list of what counts as significant is part of organizational knowledge and can be extended per product.</p>
+
+<h3>What comes out</h3>
+<p>Every finding becomes a ticket with a proposed category, severity, reproduction steps and evidence. Findings that reveal a gap in the acceptance criteria also produce a <em>proposed</em> criterion, so that the gap is closed permanently rather than fixed once.</p>
+<p>Proposed criteria never enter the coverage matrix on their own. They sit in a proposed state until the verification lead accepts, rewrites or rejects them, and the acceptance rate is a calibration metric (section 30). This is what prevents the QA agent from inflating the criteria set with low-value edge cases that then drive build-and-test loops nobody asked for. Each QA run also carries a budget (parallel runs, wall-clock, tokens), set by the performance-relative procedure of section 21, and stops when the budget is reached or when findings saturate, whichever comes first.</p>
+
+<h3>Constraints</h3>
+<ul>
+  <li>The QA agent reads production telemetry but never writes to production and never writes to code repositories. Its only outputs are tickets and staging state.</li>
+  <li>The environment is probably the largest infrastructure cost line of the methodology. It scales down outside test windows and its cost is tracked per product (section 21).</li>
+  <li>Simulation and penetration activity is scoped in writing, so that an agent exploring aggressively never leaves the environment it was given.</li>
+</ul>
+
+<h1 id="s16"><span class="num">16</span>Operations and the observability loop</h1>
+
+<p>Production is watched continuously through error tracking, product analytics, logs, metrics, uptime and cost. Three agents watch three different things:</p>
+<ul>
+  <li>The <strong>operations agent</strong> watches health: anything crossing a service level objective is an incident. It executes runbooks within its authorization (restart, scale, roll back to the previous tag) and opens an incident ticket.</li>
+  <li>The <strong>QA agent</strong> watches correctness: errors, exceptions and failed journeys become defect tickets with evidence attached.</li>
+  <li>The <strong>product signal agent</strong> watches usage: patterns in analytics become product signal tickets for the product owner.</li>
+</ul>
+
+<h2>The loop</h2>
+<div class="flow">
+  <span>Signal</span><span class="arrow">&rarr;</span><span>Classification</span><span class="arrow">&rarr;</span><span>Ticket</span><span class="arrow">&rarr;</span><span>Fix</span><span class="arrow">&rarr;</span><span>Specification update</span><span class="arrow">&rarr;</span><span>New acceptance criteria</span>
+</div>
+<p>The last two steps are what distinguish AICD from "AI fixes bugs". A fix without a specification update produces specification rot; a fix without new acceptance criteria produces a bug that can return. Both steps are required for a ticket to close.</p>
+
+<h2>Incidents and post-mortems</h2>
+<p>Incidents are the one case where a human is interrupted outside the review cadence. The operations agent handles the immediate response within its runbooks; a human owns the decision to do anything not covered by a runbook. Every incident gets a post-mortem, written with the AI but owned by a human, recorded in operational memory, and translated into acceptance criteria, runbook updates or ADRs as appropriate.</p>
+
+<div class="box rule">
+  <div class="t">Rule: production data is untrusted input</div>
+  <p>Anything an agent reads from production, including error messages, user-generated content, log lines and analytics events, is data, never instructions. A malicious user can trigger an error whose message contains text designed to steer an agent; the methodology assumes this will happen and enforces the rule structurally, in how tool results are presented to agents, not by asking the agent to be careful.</p>
+</div>
+
+<h1 id="s17"><span class="num">17</span>Autonomy tiers and the permission model</h1>
+
+<p>An agent with connections to the error tracker, the analytics platform, the database and the deployment pipeline is the most privileged entity in the company. AICD treats agent permissions as a security architecture, enforced at the infrastructure and tool-connection level, never as a line in a prompt.</p>
+
+<h2>Principles</h2>
+<ul>
+  <li>Every agent has its own identity and its own short-lived, scoped credentials. No agent ever holds a credential with more rights than its role requires.</li>
+  <li>No agent holds production write access to code. Code changes exist only as branches and pull requests.</li>
+  <li>The coder agents never see production at all: no production data, no production credentials, no production telemetry.</li>
+  <li>Every agent action is written to an immutable audit trail: which agent, which ticket, which tool, what input, what output, when.</li>
+  <li>Humans hold the permissions that agents do not: tier 1 and 2 merges, permission changes, runbook approval, and anything not explicitly granted.</li>
+</ul>
+
+<h2>Permission matrix</h2>
+<table>
+  <tr><th style="width:18%">Agent</th><th>Code repositories</th><th>CI</th><th>Staging</th><th>Production</th><th>Tickets</th><th>Specification</th></tr>
+  <tr><td>Coder</td><td>Read; write own branch</td><td>Run</td><td>Deploy own branch</td><td>None</td><td>Read own; comment</td><td>Read</td></tr>
+  <tr><td>Lead / Reviewer</td><td>Read all; merge tier 0</td><td>Read</td><td>Read</td><td>None</td><td>Read, assign, upgrade category</td><td>Read</td></tr>
+  <tr><td>QA</td><td>None</td><td>Read</td><td>Read, write</td><td>Read telemetry only</td><td>Create, read</td><td>Read; propose criteria</td></tr>
+  <tr><td>Operations</td><td>None</td><td>Read</td><td>Read, write</td><td>Deploy from tags, rollback, runbooks</td><td>Create incident, read</td><td>Read runbooks</td></tr>
+  <tr><td>Documentation</td><td>Read; write spec branches</td><td>None</td><td>None</td><td>None</td><td>Read</td><td>Propose via pull request</td></tr>
+  <tr><td>Product signal</td><td>None</td><td>None</td><td>None</td><td>Read analytics only</td><td>Create product signal</td><td>Read product brief</td></tr>
+  <tr><td>Assistant</td><td>Read</td><td>None</td><td>None</td><td>None</td><td>Read</td><td>Draft only</td></tr>
+</table>
+
+<h2>Autonomy tiers in practice</h2>
+<p>The risk tiers of section 13 define what an agent may merge; the ticket categories of section 11 define what it may start; the permission matrix defines what it may touch. Together they form the autonomy model. A new project starts with the strictest settings and loosens them only with evidence, and the loosening is itself a governance decision recorded in an ADR. Increasing model capability lowers the cost of running the tiers; it does not remove them.</p>
+
+<div class="part" id="part4">
+  <div class="label">Part IV</div>
+  <h1 class="parttitle">People and organization</h1>
+  <p class="lead">Who the humans in an AICD team are, what they own, how they are hired, and how they stay capable of disagreeing with the machines they direct.</p>
+</div>
+
+<h1 id="s18"><span class="num">18</span>Human roles</h1>
+
+<p>An AICD team is small, and every member is an experienced developer with a background in system design. Nobody writes code; everybody can read it, in any language, and judge it. The team is organized in three seats plus a product owner. Early on, one person may hold more than one seat; the seats stay distinct because their responsibilities and permissions are distinct.</p>
+
+<table>
+  <tr><th style="width:22%">Seat</th><th style="width:46%">Owns</th><th>Approves</th></tr>
+  <tr><td><strong>Architect / Orchestrator</strong></td><td>Canonical knowledge: architecture, ADRs, domain model, contracts, conventions, agent instructions. Stack selection. Escalations from the lead agent. Co-design of new features with the assistant agent. Configuration of the coder and lead agents.</td><td>Decisional tickets. Tier 2 pull requests (with a second human). Specification pull requests.</td></tr>
+  <tr><td><strong>Verification lead</strong></td><td>Acceptance criteria. Test plans. Configuration of the QA agent and the continuous test environment. Coverage and mutation thresholds. Post-incident acceptance criteria.</td><td>Test plans before build. Tier 1 pull requests. Ticket category downgrades.</td></tr>
+  <tr><td><strong>Reliability and governance</strong></td><td>Agent identities and permissions. Secrets. Infrastructure and deployment topology. Runbooks. Incident response and post-mortems. Cost tracking. The audit trail. Configuration of the operations agent.</td><td>Tier 2 pull requests (with the architect). Runbook changes. Permission changes. Autonomy loosening.</td></tr>
+  <tr><td><strong>Product owner</strong></td><td>Product brief. Prioritization. Product signal tickets. The decision of what is worth building.</td><td>Feature tickets entering the specify step. Scope changes.</td></tr>
+</table>
+
+<h3>The four human functions, across seats</h3>
+<ul>
+  <li><strong>Supervisor:</strong> watches the fleet, the queues, the costs and production; intervenes on drift.</li>
+  <li><strong>Controller:</strong> verifies test plans and evidence; approves according to tier; owns the audit trail.</li>
+  <li><strong>Co-architect:</strong> designs the system and each new feature together with the AI, and decides.</li>
+  <li><strong>Product owner:</strong> decides what should exist and why.</li>
+</ul>
+
+<h1 id="s19"><span class="num">19</span>Hiring and keeping judgment sharp</h1>
+
+<h2>Hiring criteria</h2>
+<p>AICD asks for a rarer profile than "developer": someone who has built and operated real systems, and who is comfortable never typing the implementation again. The criteria:</p>
+<ul>
+  <li><strong>System design experience.</strong> Has designed, shipped and lived with production architectures; understands trade-offs in data modeling, consistency, scaling, deployment and failure.</li>
+  <li><strong>Reads code in any language.</strong> Can open a diff in a language they have never written in and spot a dropped table, a removed authorization check, a hard-coded secret or a suspicious dependency.</li>
+  <li><strong>Writes precisely.</strong> Specification and acceptance criteria are now the core craft. Vague writers produce vague systems.</li>
+  <li><strong>Disagrees with confident answers.</strong> The agents are fluent and persuasive. The team needs people whose instinct on a polished proposal is "prove it".</li>
+  <li><strong>Operational maturity.</strong> Comfortable with observability, incidents and the reality that the system runs while they sleep.</li>
+</ul>
+
+<h2>Skill atrophy and how AICD answers it</h2>
+<p>A verifier can only judge system design if their judgment stays sharp, and judgment is usually built by building. If nobody in the team has written code for years, will they still detect a bad architecture proposed by the AI? AICD does not answer this by letting people code. It answers it with deliberate practice built into the methodology:</p>
+<ul>
+  <li><strong>Monthly architecture reviews without AI.</strong> Humans critique a recent AI-produced design or a significant pull request with no AI assistance, then compare their conclusions with the agents'. The gaps, in both directions, are recorded.</li>
+  <li><strong>Human-owned post-mortems.</strong> Every incident is analyzed by a human, not summarized by an agent. Understanding failures is where design judgment comes from.</li>
+  <li><strong>Rotating review.</strong> Verifiers rotate across products so that nobody's understanding narrows to one system.</li>
+  <li><strong>Tier 2 diff reading.</strong> The requirement that a human reads the actual diff on every tier 2 change is a control, and it is also the practice that keeps code literacy alive.</li>
+</ul>
+
+<h1 id="s20"><span class="num">20</span>Stack selection policy</h1>
+
+<p>Before AI coding agents, teams chose technologies partly on the availability of people who knew them. That constraint is gone. An agent works in any language and framework that has good documentation, which means technologies that were long avoided for their complexity or their specialized nature (functional languages, actor systems, systems languages, heavyweight enterprise frameworks) are now practical choices whenever they are the best fit.</p>
+
+<p>AICD therefore has no default stack. It has a selection policy:</p>
+<ul>
+  <li>The stack is chosen per project, for the result it delivers on that project's requirements, never for popularity.</li>
+  <li>Eligible technologies are mature, production-proven for years, and well documented. Novelty is not a disqualifier by itself, but an undocumented or unproven technology is.</li>
+  <li>Every selection is recorded in a stack ADR: requirements, options considered, why this one, what it costs in operations, and what would make the team revisit it.</li>
+  <li>Per-project freedom is balanced by cross-product conventions in organizational knowledge (how deployments, observability, secrets and the agent roles work), so the team's cognitive load stays on design rather than on tooling differences.</li>
+</ul>
+
+<div class="part" id="part5">
+  <div class="label">Part V</div>
+  <h1 class="parttitle">Governance, economics, resilience</h1>
+  <p class="lead">What it costs to run AICD, how to know whether it is working, what can go wrong, and what remains to be explored before the methodology is complete.</p>
+</div>
+
+<h1 id="s21"><span class="num">21</span>Economics and metrics</h1>
+
+<p>AICD replaces most salary cost with token cost plus infrastructure, and turns both into quantities that can be measured per unit of work. This is a significant advantage over traditional teams, where the cost of a feature was an estimate.</p>
+
+<div class="box">
+  <div class="t">Why AICD gives no absolute cost baseline</div>
+  <p>Model prices change constantly, and a more capable model consumes fewer tokens for the same ticket because it succeeds in one pass instead of several. Any absolute figure written into a methodology would be wrong within months. AICD therefore defines the quantities to measure and the way to set thresholds, and leaves the numbers to each team, to be re-measured whenever the model changes.</p>
+</div>
+
+<h2>Performance-relative thresholds</h2>
+<p>Every budget and threshold in AICD (tokens per ticket, attempts, wall-clock time) is expressed relative to the measured performance of the models in use, not as a fixed number. The procedure:</p>
+<ol>
+  <li>Maintain a <strong>calibration set</strong>: a small number of representative closed tickets per category (Auto, Behavioral, Decisional), with known correct outcomes.</li>
+  <li>When a model is adopted or upgraded, run the calibration set through the fleet and record, per category: first-pass success rate, median tokens to completion, median attempts, median time.</li>
+  <li>Set budgets as multiples of the medians (for example three times the median tokens, twice the median attempts). The multiple is the team's tolerance; the base is the model's measured performance.</li>
+  <li>Re-run the calibration whenever the model, the agent instructions or the memory service changes materially. A budget that was right for one model is wrong for the next.</li>
+</ol>
+<p>The same logic applies to escalation and categorization thresholds (section 30).</p>
+
+<p>The methodology requires that the following be tracked, per product and per month:</p>
+
+<table>
+  <tr><th style="width:32%">Metric</th><th>What it tells you</th></tr>
+  <tr><td>Tokens and cost per ticket, by category</td><td>Which kinds of work are expensive; whether Auto tickets are as cheap as they should be</td></tr>
+  <tr><td>Cost per merged pull request</td><td>The unit cost of change, including failed attempts and reviews</td></tr>
+  <tr><td>Continuous test environment cost</td><td>Usually the largest infrastructure line; whether it scales down correctly</td></tr>
+  <tr><td>Memory service cost</td><td>Indexing and retrieval; grows with the number of products</td></tr>
+  <tr><td>Human hours per approved ticket, by category and tier</td><td>Whether humans are still the bottleneck, and where</td></tr>
+  <tr><td>Escalation rate</td><td>Too high and humans drown; too low and architecture drifts unreviewed</td></tr>
+  <tr><td>Blocked rate and average attempts to completion</td><td>Whether budgets are tuned correctly and whether specifications are clear enough</td></tr>
+  <tr><td>Time from ticket validated to deployed</td><td>The flow speed the methodology promises</td></tr>
+  <tr><td>Defects found in production versus in the test environment</td><td>Whether continuous testing is doing its job</td></tr>
+  <tr><td>Mutation score and coverage matrix completeness</td><td>Whether the verification layer is actually proving things</td></tr>
+</table>
+
+<p>Expect coder agents to be the cheap part, and continuous QA plus memory indexing to be the parts that surprise. The economics of a project are judged on these numbers, not on intuition.</p>
+
+<h1 id="s22"><span class="num">22</span>Failure modes and safeguards</h1>
+
+<p>Every methodology fails in characteristic ways. AICD names its own in advance and builds the answer into the structure.</p>
+
+<table>
+  <tr><th style="width:26%">Failure mode</th><th style="width:34%">What it looks like</th><th>Safeguard</th></tr>
+  <tr><td>Model provider outage</td><td>Development stops because the agents cannot run</td><td>Products never depend on AI at runtime for their own operation; only the development pipeline does. The agent layer is provider-agnostic so coders can run on another model family with degraded quality. Production keeps running regardless.</td></tr>
+  <tr><td>Agent looping</td><td>A coder retries the same failing approach indefinitely, burning budget</td><td>Per-ticket budgets and the blocked report protocol (section 12).</td></tr>
+  <tr><td>Silent test weakening</td><td>An agent makes the build pass by changing or removing a test</td><td>Mutation testing in CI; the rule that any modified test escalates to a human.</td></tr>
+  <tr><td>Specification rot</td><td>Docs no longer describe the system; since docs are the source of truth, the methodology silently breaks</td><td>Documentation agent on every merge; weekly drift audit; "last verified against code" dates; tickets cannot close without a specification update.</td></tr>
+  <tr><td>Correlated blind spots</td><td>Coder and reviewer share the same model and miss the same class of error</td><td>Lead/reviewer on a different model family; a human reads every tier 2 diff.</td></tr>
+  <tr><td>Credential leakage</td><td>A key on an agent's machine is compromised and grants wide access</td><td>Short-lived, scoped, per-agent credentials; coders never see production; immutable audit trail.</td></tr>
+  <tr><td>Prompt injection via production data</td><td>Text in an error message or user content steers the monitoring or QA agent</td><td>Production data is untrusted input, enforced structurally in how tool results reach agents (section 16).</td></tr>
+  <tr><td>Human bottleneck</td><td>A QA agent running around the clock files more tickets than humans can approve</td><td>Ticket categories with automatic validation for Auto and Behavioral; review cadence; upgrade-only rule.</td></tr>
+  <tr><td>Unreviewed architectural drift</td><td>Many small Auto and Behavioral tickets accumulate into a de facto architecture change</td><td>ADR-covered areas always escalate; monthly human architecture review; the lead agent's contract-change trigger.</td></tr>
+  <tr><td>Parallel conflicts</td><td>Two coders modify the same module and produce incompatible pull requests</td><td>Lead agent orders the queue by affected modules; rebase before ready; conflicting tickets are an escalation trigger.</td></tr>
+  <tr><td>Knowledge concentration</td><td>The architect leaves and nobody can operate the system</td><td>Complete canonical documentation is a requirement, not a nicety; a new architect should be operational within weeks from the documents alone.</td></tr>
+  <tr><td>Human skill atrophy</td><td>Verifiers lose the judgment needed to disagree with the agents</td><td>Deliberate practice built into the methodology (section 19).</td></tr>
+</table>
+
+
+<div class="part" id="part6">
+  <div class="label">Part VI</div>
+  <h1 class="parttitle">Applying AICD</h1>
+  <p class="lead">How a product enters the methodology: either born inside it, or migrated into it from a codebase that already exists. Both paths end in the same steady state described in Parts II and III; they differ in what has to exist before the agent fleet is allowed to work.</p>
+</div>
+
+<h1 id="s24"><span class="num">23</span>Starting a new product under AICD</h1>
+
+<p>A new product under AICD follows a fixed sequence of gates. Nothing is built before the specification exists; no feature is added without a plan; no human touches the code. The sequence comes from the Vibe Engineer process that preceded AICD (framing session, thirteen documents, phased build loop, three golden rules) and extends it with the agent team, the verification layer and the governance of Parts II and III.</p>
+
+<div class="box rule">
+  <div class="t">The three golden rules, inherited</div>
+  <p><strong>Never skip the documents.</strong> They are what stops the AI from improvising a different decision at every phase, and they are the human's version of the code.<br>
+  <strong>Never add a feature without a plan.</strong> Before any new work the agent analyzes what exists, explains how the new thing integrates and what it touches, and builds only after.<br>
+  <strong>Never touch the code.</strong> Every change is requested in language. A manual edit puts the system outside what the agents know.</p>
+</div>
+
+<h2>The gates</h2>
+<div class="flow">
+  <span>G0 Framing</span><span class="arrow">&rarr;</span><span>G1 Specification</span><span class="arrow">&rarr;</span><span>G2 Design</span><span class="arrow">&rarr;</span><span>G3 Environments and access</span><span class="arrow">&rarr;</span><span>G4 Fleet setup</span><span class="arrow">&rarr;</span><span>G5 Phased build</span><span class="arrow">&rarr;</span><span>G6 Go-live</span><span class="arrow">&rarr;</span><span>G7 Steady state</span>
+</div>
+
+<h3>G0: Framing session</h3>
+<p>The product owner and the architect run a framing session with the assistant agent. The goal is to turn a vague idea into a bounded project. The agent is explicitly asked to challenge the idea: who really has this problem, what already solves it, what makes this different, what would make it fail. The session ends with a written scope that includes the non-goals, meaning what the product will not do, and a validation grid answered honestly. Exit criterion: the idea can be stated in one paragraph, the target user in one sentence, success in one measurable statement, and the non-goals in a list.</p>
+
+<h3>G1: Specification</h3>
+<p>The assistant agent generates the specification set from the framing output. The product brief is generated first and verified line by line by the humans, because everything else derives from it; the remaining documents are generated only once the brief is correct. AICD's specification set for a new product:</p>
+
+<table>
+  <tr><th style="width:26%">Document</th><th style="width:20%">Verified by</th><th>What it fixes</th></tr>
+  <tr><td>PROJECT_BRIEF</td><td>Product owner, architect</td><td>Problem, user, definition of success, non-goals. The only document read in full by every human before anything else exists.</td></tr>
+  <tr><td>PRD</td><td>Product owner</td><td>Features by priority, user journeys. The "what".</td></tr>
+  <tr><td>ARCHITECTURE</td><td>Architect</td><td>Components and how they communicate; deployment topology; update strategy. Prevents the agents from changing tools mid-project.</td></tr>
+  <tr><td>Stack ADR</td><td>Architect</td><td>Requirements, options considered, the chosen stack and why, operational cost, revisit conditions (section 20).</td></tr>
+  <tr><td>DATA_MODEL</td><td>Architect</td><td>Entities, relationships, invariants, state machines, in text and Mermaid.</td></tr>
+  <tr><td>API_SPEC</td><td>Architect</td><td>Interfaces between front and back, between services, and with third parties; error semantics.</td></tr>
+  <tr><td>LLD</td><td>Architect</td><td>Project layout, responsibilities of each part, naming.</td></tr>
+  <tr><td>CONVENTIONS</td><td>Architect</td><td>Coding rules, commit format, branch rules, what agents always and never do.</td></tr>
+  <tr><td>SECURITY_NOTES</td><td>Architect, reliability and governance</td><td>Who may do what, how input is validated, how edge cases are handled, tenant isolation. Defines which modules are tier 2.</td></tr>
+  <tr><td>ENV_SETUP and permission manifest</td><td>Reliability and governance</td><td>Every credential the product needs, and, new in AICD, which agent identity gets which credential at which scope.</td></tr>
+  <tr><td>TESTING and acceptance criteria</td><td>Verification lead</td><td>Test strategy per level, coverage and mutation thresholds, and the first acceptance criteria per phase of the roadmap.</td></tr>
+  <tr><td>OBSERVABILITY</td><td>Reliability and governance</td><td>What is measured, the service level objectives, the alert rules, which agent watches what.</td></tr>
+  <tr><td>CI_CD and runbooks</td><td>Reliability and governance</td><td>How a validated change reaches production; deploy, rollback, scale and recover procedures the operations agent may execute.</td></tr>
+  <tr><td>ROADMAP</td><td>Product owner, architect</td><td>Build phases, each small enough to be one batch of tickets with its own acceptance criteria.</td></tr>
+  <tr><td>Agent instructions</td><td>Architect</td><td>The file every agent keeps open: a summary of the others plus the absolute rules. In AICD there is one per agent role, derived from a shared base.</td></tr>
+</table>
+<h3>Foundation set and phase set</h3>
+<p>Not every document above has to be complete before the first line of code, and demanding that would recreate the failure of upfront design: certainty on paper about things no one has observed yet. AICD splits the set in two.</p>
+<ul>
+  <li><strong>Foundation set, complete before any code:</strong> PROJECT_BRIEF, ARCHITECTURE, the stack ADR, DATA_MODEL at the level of entities and invariants, SECURITY_NOTES with the tier 2 modules, ENV_SETUP with the permission manifest, CONVENTIONS, OBSERVABILITY, CI_CD, ROADMAP, and the agent instructions. These fix what is expensive to change later, and agents cannot be allowed to improvise them.</li>
+  <li><strong>Phase set, completed per roadmap phase, before that phase starts:</strong> the PRD detail for the phase's features, API_SPEC and DATA_MODEL detail for what the phase touches, LLD for the modules it creates, the acceptance criteria and test plan for the phase, and the design artifacts for its journeys. They are written when the previous phase has produced real behavior to learn from.</li>
+</ul>
+<p>The rule that nothing is built outside the specification is unchanged: a phase's specification exists before the phase is built. What changes is that detail is written just in time, at the granularity of a phase, not for the whole product on day one.</p>
+
+<p>Exit criterion for G1: every foundation document has an owner's sign-off, the security notes name the tier 2 modules, the permission manifest is complete, and the phase set for the first roadmap phase is complete.</p>
+
+<h3>G2: Design</h3>
+<p>Screens, flows and visual language are produced with a design agent or tool from the PRD, and validated by the product owner before any code. Design artifacts are referenced from the PRD and become inputs to the coder agents. Exit criterion: every user journey in the PRD has a validated design.</p>
+
+<h3>G3: Environments and access</h3>
+<p>Accounts, infrastructure, repositories, the continuous test environment, observability tools and third-party services are created, and access is attributed from the permission manifest. Humans receive their seat permissions first; then each agent identity is created with short-lived, scoped credentials and nothing more. No agent ever receives a human's personal key. Exit criterion: the permission matrix of section 17 is enforced by the tools, verified by attempting one forbidden action per agent and confirming it fails.</p>
+
+<h3>G4: Fleet setup</h3>
+<p>The agent roles of section 7 are instantiated for this product with their instruction files, their memory scopes, and the lead agent on a different model family than the coders. The memory service is loaded with the specification (layer 1) and the organizational knowledge (layer 2). The ticketing system, the pull request template and the CI gates (lint, types, tests, coverage matrix, mutation score, security scan) are in place. Exit criterion: a deliberately trivial tier 0 ticket travels the full path from queue to merged pull request without human intervention, and a deliberately forbidden action by a coder is refused.</p>
+
+<h3>G5: Phased build</h3>
+<p>The roadmap is executed phase by phase. A phase is a batch of tickets, validated by the humans, worked in fleet mode. Before each phase the verification lead confirms the acceptance criteria and the QA agent's test plan; during the phase the lead agent reviews and escalates; at the end of the phase the humans explore the product themselves on staging and give feedback in product language, which becomes tickets. A phase closes when its acceptance criteria are all covered, the coverage matrix is complete, and the QA agent's exhaustive run on staging reports no open Auto or Behavioral tickets. Exit criterion for G5: every roadmap phase is closed.</p>
+
+<h3>G6: Go-live</h3>
+<p>A tag is cut, deployed to staging, and the full QA run (end-to-end, security, load, chaos, simulation) executes against it. The same tag is then promoted to production; there is never a separate build for production. Observability is confirmed live: the operations agent sees production, the product signal agent sees analytics, alert rules fire in a test. Exit criterion: the rollback runbook has been executed once for real, successfully, before the first users arrive.</p>
+
+<h3>G7: Steady state</h3>
+<p>The product is now in the flow of Part III. The fleet works validated tickets; the QA agent runs on significant modifications; the documentation agent keeps the specification current; humans supervise, verify and decide. The first month runs with the strictest tiers; loosening follows the evidence rule of section 17.</p>
+
+<div class="box">
+  <div class="t">Branches for a new product</div>
+  <p>The solo Vibe Engineer process used three long-lived branches (dev, staging, main) because one person and one agent needed a simple safety ladder. In AICD the ladder is provided by environments and tag promotion, not by branches: the fleet works on many short-lived ticket branches, merges to a single protected main, and the same tag is deployed to staging and then promoted to production. This gives the same safety with fewer merge conflicts and a clean audit trail. Teams migrating from the three-branch model keep their environments and drop the two extra branches.</p>
+</div>
+
+<h1 id="s25"><span class="num">24</span>Migrating an existing product into AICD</h1>
+
+<p>This is the harder path, and the one most teams will actually take: a product already exists, already has users, and was built either by vibe coding (with or without documents), by a traditional team, or by a mix. The agents cannot be trusted with it until they know it, and the humans cannot verify agent work on it until they have a baseline of what it does today. Migration is therefore mostly a documentation and access exercise, done in a strict order, with the fleet kept out until the last step.</p>
+
+<div class="box rule">
+  <div class="t">The migration rule</div>
+  <p>No behavioral change is made to a product under migration until three things exist: an as-built specification verified against the code, a verification baseline that captures current behavior, and an access attribution in which no agent holds anything beyond its role. Until then the only permitted changes are the migration's own artifacts.</p>
+</div>
+
+<h2>Three origins, one path</h2>
+<table>
+  <tr><th style="width:26%">Origin</th><th>What it means for the migration</th></tr>
+  <tr><td>Vibe-coded with generated documents</td><td>The best case, but the documents were written before the code and have drifted. They are treated as the intended specification, not the as-built one; the first job is a drift audit that produces the divergence register.</td></tr>
+  <tr><td>Vibe-coded without documents</td><td>The as-built specification is reverse-engineered entirely from code, telemetry and the product owner. Expect the largest divergence between what the owner thinks the product does and what it does.</td></tr>
+  <tr><td>Built by a traditional team</td><td>Usually partial documentation, real tests of uneven value, and people who hold knowledge in their heads. Interviews are a source. The human transition (section 24.8) is the delicate part.</td></tr>
+</table>
+
+<h2>24.1 Phase M0: Freeze and snapshot</h2>
+<ul>
+  <li>Declare the migration. From this moment no human edits code by hand, on any branch, for any reason. If a production emergency requires a change, it is done as a fix ticket in pairing mode, recorded as such.</li>
+  <li>Tag the current production state as the <strong>migration baseline</strong>. Every later comparison is against this tag.</li>
+  <li>Inventory everything the product is made of: repositories, branches with unmerged work, environments, services, databases and their sizes, queues, scheduled jobs, third-party services, domains, certificates, and every place a credential lives.</li>
+  <li>Inventory every human who currently has access to anything, with what rights.</li>
+</ul>
+<p>Exit criterion: the inventory is complete enough that a new engineer could draw the system from it. Unknowns are listed as unknowns, not omitted.</p>
+
+<h2>24.2 Phase M1: Access attribution</h2>
+<p>Access is attributed before any agent reads the codebase, because the agents that will document the system need read access, and giving them anything more at this stage is the classic mistake. Order of operations:</p>
+<ol>
+  <li><strong>Humans first.</strong> The seats of section 18 are assigned. Personal accounts with broad rights are replaced by seat-scoped roles. Anyone not in a seat loses write access to production.</li>
+  <li><strong>Credential rotation.</strong> Every credential in the inventory is rotated. Anything that was ever pasted into a chat, a prompt, a notebook or an agent's configuration is assumed compromised.</li>
+  <li><strong>Agent identities.</strong> One identity per agent role, with short-lived credentials. No agent reuses a human's key, and no agent shares an identity with another agent.</li>
+  <li><strong>Migration-time permissions.</strong> Stricter than steady state, because the specification does not exist yet.</li>
+</ol>
+
+<table>
+  <tr><th style="width:20%">Agent</th><th>During migration</th><th>After migration (steady state, section 17)</th></tr>
+  <tr><td>Documentation</td><td>Read all code and infrastructure definitions; write only to the migration documentation branch</td><td>Read; propose specification pull requests</td></tr>
+  <tr><td>Assistant</td><td>Read all; draft only</td><td>Unchanged</td></tr>
+  <tr><td>QA</td><td>Read code (exception, for characterization only); read production telemetry; write staging once it exists</td><td>No code access; staging and tickets</td></tr>
+  <tr><td>Operations</td><td>Read production telemetry and infrastructure; no deploy, no runbook execution</td><td>Deploy from tags, rollback, runbooks</td></tr>
+  <tr><td>Product signal</td><td>Read analytics</td><td>Unchanged</td></tr>
+  <tr><td>Lead / Reviewer</td><td>Not instantiated</td><td>Full role</td></tr>
+  <tr><td>Coder</td><td>Not instantiated</td><td>Own branch, CI, staging</td></tr>
+</table>
+<p>Exit criterion: no human holds a personal production key; no agent holds anything beyond the migration column; every forbidden action has been attempted once and refused.</p>
+
+<h2>24.3 Phase M2: Reverse-engineering the as-built specification</h2>
+<p>This is the core of the migration. The documentation agent, driven by the architect, produces a set of as-built documents from the code, the infrastructure, the telemetry and interviews with the people who know the product. Each document is generated by the agent and verified by the human seat that owns it. The order matters: later documents depend on earlier ones.</p>
+
+<table>
+  <tr><th style="width:5%">#</th><th style="width:25%">Document</th><th style="width:40%">Content</th><th>Source and verification</th></tr>
+  <tr><td>1</td><td>System inventory and as-built architecture</td><td>Components, services, data stores, queues, jobs, external integrations, deployment topology, how requests flow</td><td>Generated from code and infrastructure definitions; verified by the architect against the running system</td></tr>
+  <tr><td>2</td><td>Dependency and third-party register</td><td>Every library with version and license; every external service with what it is used for, the credential involved and the failure impact</td><td>Generated from manifests and code; verified by reliability and governance</td></tr>
+  <tr><td>3</td><td>As-built domain model</td><td>Entities, relationships and invariants as they actually exist in the schema and the code, including the ones that contradict each other</td><td>Generated from schema and code; verified by the architect</td></tr>
+  <tr><td>4</td><td>Data inventory and classification</td><td>Every table or collection, its size, whether it holds personal data, financial data, credentials or content, retention, and who can read it</td><td>Generated from schema; classification decided by reliability and governance. Drives anonymization for the test environment.</td></tr>
+  <tr><td>5</td><td>As-built interface contracts</td><td>Every endpoint, event, webhook and job interface with its real inputs, outputs and error behavior, including undocumented ones</td><td>Generated from code and traffic; verified by the architect</td></tr>
+  <tr><td>6</td><td>As-built security map</td><td>Authentication and authorization as implemented; where input is validated and where it is not; secrets handling; tenant isolation; known exposure</td><td>Generated from code and a full security scan; verified by reliability and governance. Names the tier 2 modules.</td></tr>
+  <tr><td>7</td><td>As-built operations</td><td>How the product is deployed today, how it has been rolled back, backups and their last restore test, monitoring already in place</td><td>Generated from pipelines and infrastructure; verified by reliability and governance. Becomes the first runbooks.</td></tr>
+  <tr><td>8</td><td>Known issues and debt register</td><td>Everything the audit finds: dead code, duplicated logic, unsafe patterns, missing validation, flaky behavior, performance hot spots</td><td>Generated by agent audit; prioritized by the architect. Feeds the first migration tickets.</td></tr>
+  <tr><td>9</td><td>Product brief and PRD, reconstructed</td><td>What the product is for, for whom, the features that exist and their intended behavior</td><td>Interviews with the product owner, analytics, the existing documents if any; written by the product owner with the assistant agent</td></tr>
+  <tr><td>10</td><td>Divergence register</td><td>Every place where the intended behavior (9, and any pre-existing documents) differs from the as-built behavior (1 to 8)</td><td>Produced by the drift audit; each entry is resolved by a human decision: the code is right and the intent updates, or the intent is right and a ticket is created</td></tr>
+  <tr><td>11</td><td>Inherited ADRs</td><td>The significant decisions already embedded in the code (stack, data store, auth approach, integration patterns), recorded with status "inherited", with their consequences and their escalation scope</td><td>Drafted by the documentation agent; accepted or marked for revisit by the architect</td></tr>
+  <tr><td>12</td><td>Observed conventions and target conventions</td><td>The rules the code actually follows, and the rules it should follow from now on; the gap is a debt item, not an excuse to rewrite</td><td>Generated; decided by the architect</td></tr>
+  <tr><td>13</td><td>Risk map</td><td>Every module classified into tier 0, 1 or 2, with the reason</td><td>Derived from 4, 6 and 8; decided jointly by the architect and reliability and governance</td></tr>
+  <tr><td>14</td><td>Agent instructions</td><td>One file per agent role for this product, derived from the shared base and the documents above</td><td>Written by the architect with the assistant agent</td></tr>
+</table>
+
+<div class="box">
+  <div class="t">As-built first, intended second</div>
+  <p>The temptation during migration is to write the specification the product should have had. AICD requires documenting what exists first, exactly, including its flaws, and only then deciding what should change. A specification that describes an imagined product is worse than none: the agents will "fix" the real product toward it without anyone having decided that, and the verification baseline (M3) will not match either.</p>
+</div>
+
+<p>Exit criterion: every document has its owner's sign-off, every divergence entry has a human decision, and the risk map covers every module.</p>
+
+<h2>24.4 Phase M3: Verification baseline</h2>
+<p>Before any agent is allowed to change the product, the team needs to know what "unchanged" means. The baseline captures current behavior so that every later change can be shown to preserve it or to alter it deliberately.</p>
+<ul>
+  <li><strong>Characterization criteria.</strong> The verification lead, with the QA agent, writes acceptance criteria that describe current behavior as observed, journey by journey, including behavior the team considers wrong (those criteria are marked "to change" and linked to divergence entries). These are the first entries of the product's criteria set.</li>
+  <li><strong>Existing tests audit.</strong> Every existing test is mapped to a criterion or flagged as unmapped. Unmapped tests are kept but marked; they are not deleted until a criterion covers what they were protecting.</li>
+  <li><strong>Baseline measurements.</strong> Mutation score, coverage matrix completeness, security scan results, performance under a load profile derived from real analytics. These numbers are recorded against the baseline tag; the methodology's thresholds start from them, not from an ideal.</li>
+  <li><strong>Continuous test environment.</strong> Stood up from the as-built operations document, seeded with anonymized data according to the data classification. The QA agent runs a first exhaustive pass and files everything it finds; those findings join the debt register.</li>
+</ul>
+<p>Exit criterion: every user journey in the reconstructed PRD has characterization criteria; the coverage matrix exists, even if sparse; the baseline numbers are recorded; the QA agent's first exhaustive run is complete.</p>
+
+<h2>24.5 Phase M4: Observability onboarding</h2>
+<p>Error tracking, analytics, logs, metrics and uptime are connected if they were not, service level objectives are set from the baseline measurements, and alert rules are written. The operations agent and the product signal agent go live in read-only mode: they classify and file tickets but execute nothing. The team watches the ticket stream for a fixed period to calibrate categorization (section 30) before any of it becomes actionable.</p>
+
+<h2>24.6 Phase M5: Fleet activation and progressive autonomy</h2>
+<p>Only now are the lead agent and the coder agents instantiated, with the memory service loaded with the as-built specification, and given the steady-state permissions of section 17. Autonomy is opened in steps, each gated by evidence:</p>
+<table>
+  <tr><th style="width:16%">Step</th><th style="width:44%">What the fleet may do</th><th>Evidence to move on</th></tr>
+  <tr><td>Shadow</td><td>Work Auto tickets from the debt register; every pull request treated as tier 2 (two humans, one reads the diff)</td><td>A defined number of pull requests merged with no human-found defect; coverage matrix growing</td></tr>
+  <tr><td>Tier discipline</td><td>Normal tiers apply, but auto-merge is disabled; Behavioral tickets allowed</td><td>Escalation rate and blocked rate within the calibrated range; mutation score not decreasing</td></tr>
+  <tr><td>Steady state</td><td>Full Part III flow, including tier 0 auto-merge and operations agent runbook execution</td><td>One full cycle of significant modification, QA run, specification update and observed production behavior without incident</td></tr>
+</table>
+<p>The step durations are set by the team and recorded; they are not part of the methodology, because they depend on the product and the models.</p>
+
+<h2>24.7 Migration exit checklist</h2>
+<ul>
+  <li>No human has edited code since M0, or every exception is recorded as a ticket.</li>
+  <li>The as-built specification is complete and signed off; the divergence register is fully resolved.</li>
+  <li>Every module has a tier; every tier 2 module has an ADR or a security note covering it.</li>
+  <li>Every credential has been rotated once; every agent has its own scoped identity; the forbidden-action test passes for every agent.</li>
+  <li>Characterization criteria cover every journey; the coverage matrix and baseline numbers exist.</li>
+  <li>The continuous test environment runs with anonymized data.</li>
+  <li>The rollback runbook has been executed successfully by the operations agent on staging.</li>
+  <li>The fleet has completed the three autonomy steps.</li>
+  <li>The documentation agent's first weekly drift audit reports zero divergence.</li>
+</ul>
+
+<h2>24.8 Special cases</h2>
+<p><strong>A product with a team of coders.</strong> The developers stop writing code at M0 and take the seats of section 18 or leave the product. There is no hybrid period in which some code is written by hand and some by agents; hybrid codebases are the failure mode AICD exists to prevent. The developers' knowledge is captured during M2 through interviews, and their judgment is what makes them good verifiers.</p>
+<p><strong>Several products sharing a codebase.</strong> The shared code is documented once as its own component with its own tier map and ADRs; each product references it. A change to the shared component is decisional for every product that uses it.</p>
+<p><strong>A product with no tests at all.</strong> M3 is longer, and the shadow step of M5 stays until the coverage matrix reaches the threshold the verification lead sets from the baseline. The temptation to let coders "add tests everywhere" first is resisted: tests without criteria prove nothing, and the criteria come first.</p>
+<p><strong>A product whose stack the team would not have chosen.</strong> The stack is inherited and recorded in an inherited ADR with revisit conditions. Migration never includes a rewrite. A rewrite, if ever justified, is a new product under section 23 with the migrated product as the reference system.</p>
+
+<div class="part" id="part7">
+  <div class="label">Part VII</div>
+  <h1 class="parttitle">Deep dives</h1>
+  <p class="lead">The remaining aspects of the methodology in depth: how the memory service works, how several products are run by one team, the security model of the agent fleet, what the humans see, how the methodology itself evolves, and how its thresholds are calibrated.</p>
+</div>
+
+<h1 id="s26"><span class="num">25</span>Memory service: implementation model</h1>
+
+<p>Section 8 defined what memory contains and who may see it. This section defines how a memory service is built so that the definition holds in practice. The design is tool-agnostic: any implementation that satisfies these components and rules is an AICD memory service.</p>
+
+<h2>Components</h2>
+<table>
+  <tr><th style="width:24%">Component</th><th>Responsibility</th></tr>
+  <tr><td>Repository indexer</td><td>Watches layer 1 and layer 2 repositories. On every merge to main, re-indexes the changed documents: full-text index, semantic embeddings per section, and the document graph (which section references which ADR, which criterion, which module).</td></tr>
+  <tr><td>Code map builder</td><td>Builds and maintains a structural map of each code repository: modules, their public interfaces, dependency edges, entry points, the tests that cover each module, and the specification sections each module implements (from commit and pull request anchors). Updated on every merge.</td></tr>
+  <tr><td>Operational log store</td><td>Append-only store for layer 3: tickets, outcomes, escalation decisions, blocked reports, incidents, post-mortems, closing reports. Every record carries the agent identity, the ticket, the product and the timestamp. Indexed by module and by criterion.</td></tr>
+  <tr><td>Scope enforcer</td><td>Maps each agent identity to a role and each role to a set of readable sources and filters. Enforced at query time; an agent cannot request outside its scope, and the refusal is logged.</td></tr>
+  <tr><td>Retrieval API</td><td>Answers task-oriented queries ("context for ticket 482", "history of module X", "criteria touching payments") by assembling a bounded context package: the relevant specification sections, ADRs with escalation scope, related past tickets and blocked reports, the code map of the affected modules, and the criteria involved. Returns provenance for every item.</td></tr>
+  <tr><td>Freshness tracker</td><td>Records for each indexed document the commit it was indexed at and the "last verified against code" date; exposes staleness so the drift audit and the agents can see when a source may be out of date.</td></tr>
+</table>
+
+<h2>Rules</h2>
+<ul>
+  <li>The repositories are the truth; the index is a derived cache and can be rebuilt from scratch at any time. Nothing exists only in the index.</li>
+  <li>Context packages are bounded. The service returns what the task needs, with provenance, not the whole product. An agent that needs more asks a second question; the service never pre-loads "everything, just in case".</li>
+  <li>Every item returned carries its source, its commit and its verification date, so that the agent and, later, a human reviewer can tell where a belief came from.</li>
+  <li>Agents write to layer 3 only through structured records (closing report, blocked report, escalation decision), never as free notes. Free notes rot; structured records can be queried and audited. Records derived from production pass through the sanitization barrier of section 8 before they are written.</li>
+  <li>Retrieval quality is measured. A calibration set of questions with known correct context (section 30) is run whenever the indexer, the embeddings or the code map builder change.</li>
+</ul>
+
+<h2>Multi-product layout</h2>
+<p>One memory service serves the whole organization. Layer 2 is indexed once; layers 1 and 3 are indexed per product and partitioned by product identifier. An agent identity belongs to one product; cross-product retrieval exists only for the architect's assistant agent and the organizational drift audit.</p>
+
+<h1 id="s27"><span class="num">26</span>Operating several products with one team</h1>
+
+<p>AICD is designed for a small human team supervising several products, each potentially on a different stack. The structure that makes this workable:</p>
+<ul>
+  <li><strong>One organizational repository</strong> (layer 2): the methodology, the agent role definitions, the shared conventions for deployment, observability, secrets, tickets and pull requests, the security policy, the calibration procedures. Every product inherits it.</li>
+  <li><strong>One fleet instance per product</strong>, with its own agent identities, memory scopes, ticket queue and continuous test environment. Fleets never share credentials or context. A product's coder cannot see another product's code.</li>
+  <li><strong>Product-specific stacks, shared operational shape.</strong> A product may run on any stack (section 20), but every product exposes the same operational surface: the same deploy-from-tag procedure, the same rollback semantics, the same observability signals, the same ticket format, the same pull request report. The humans then supervise all products the same way regardless of language or framework.</li>
+  <li><strong>Seats span products.</strong> The three seats and the product owner role exist once for the organization; each seat covers all products, with rotation (section 19) to keep judgment broad. A product may have its own product owner.</li>
+  <li><strong>One review queue, ordered by risk and by product priority.</strong> Escalations and tier 1 and 2 approvals from all products land in one queue, ordered by risk tier first, then by the organization's product priority list, then by age. Incidents jump the queue.</li>
+  <li><strong>Cross-product incidents.</strong> When several products share a component or a third-party service, an incident on it is opened once, linked to every affected product, and handled by the reliability and governance seat with the operations agent of each product executing its own runbooks.</li>
+  <li><strong>Portfolio dashboard.</strong> Section 30 describes the per-product view; the organizational view aggregates queue depth, escalation rate, cost, and incident state across products, so that a supervisor can see in one screen which product needs attention.</li>
+</ul>
+
+<h1 id="s28"><span class="num">27</span>Security and compliance in depth</h1>
+
+<h2>Threat model of the agent fleet</h2>
+<table>
+  <tr><th style="width:24%">Threat</th><th style="width:36%">Path</th><th>Controls</th></tr>
+  <tr><td>Injection through production data</td><td>A user triggers an error or submits content containing instructions; the QA, operations or product signal agent reads it as telemetry</td><td>Production data is presented to agents as quoted, typed data with provenance, never as free text in the instruction channel; agents that read production have no write path to code; every action on a production-derived ticket is reviewed by the lead agent before a coder sees it</td></tr>
+  <tr><td>Injection through dependencies and documentation</td><td>A library, a README or a web page read by a coder contains instructions</td><td>Coders fetch documentation only from an allow-list; new dependencies are an escalation trigger; dependency contents are data, not instructions</td></tr>
+  <tr><td>Compromised agent identity</td><td>An agent's credential leaks or its runtime is compromised</td><td>Short-lived credentials, per-agent identity, least privilege per the permission matrix; a compromised coder can at most open a branch; a compromised QA agent can at most write to staging; anomaly detection on the audit trail</td></tr>
+  <tr><td>Supply chain</td><td>A malicious or vulnerable package enters through a coder's change</td><td>Dependency audit on every pull request; new dependencies escalate; the dependency register (section 24) is kept current; pinned versions; license check</td></tr>
+  <tr><td>Insider</td><td>A human with a seat abuses it</td><td>Tier 2 requires two humans; the audit trail covers human actions too; permission changes require the reliability and governance seat and are themselves audited</td></tr>
+  <tr><td>Model provider</td><td>Provider outage, model behavior change, data exposure to the provider</td><td>Provider-agnostic agent layer; calibration re-run on any model change; data classification decides what may be sent to which provider; the test environment uses anonymized data only</td></tr>
+  <tr><td>Agent collusion or drift</td><td>Coders and reviewer converge on the same wrong belief</td><td>Cross-model review; human reads tier 2 diffs; monthly human architecture review; mutation testing</td></tr>
+</table>
+
+<h2>Secrets architecture</h2>
+<ul>
+  <li>A single secrets manager is the only place credentials live. Nothing in repositories, prompts, instruction files or memory.</li>
+  <li>Agents receive credentials at runtime, scoped to the task and expiring with it. The permission manifest (section 23) defines which identity may request which secret.</li>
+  <li>Every secret has an owner (a seat), a rotation period, and a last-rotated date visible on the dashboard.</li>
+  <li>A credential that appears anywhere it should not (a log, a ticket, a pull request, a memory record) is rotated immediately and the leak is an incident.</li>
+</ul>
+
+<h2>Data handling</h2>
+<ul>
+  <li>The data classification of section 24.3 (personal, financial, credentials, content) governs three things: what may be copied to the test environment (only anonymized), what may be sent to a model provider, and which modules are tier 2.</li>
+  <li>Anonymization is a runbook executed by the operations agent, verified by the QA agent, and re-run on every refresh of staging data.</li>
+  <li>Retention rules are part of the data inventory and are enforced by scheduled jobs that are themselves specified and tested.</li>
+</ul>
+
+<h2>Audit and compliance</h2>
+<p>The audit trail (every agent and human action, with identity, ticket, tool, input, output and time) is immutable and retained according to the organization's policy. Combined with the traceability chain of section 13 (line to commit to ticket to specification to decision), it answers the questions any compliance framework asks: who changed what, why, who approved it, and what proved it was correct. Regulated products add their framework's specific controls as an extension in organizational knowledge; the core provides the evidence.</p>
+
+<h1 id="s29"><span class="num">28</span>The fleet dashboard</h1>
+
+<p>Humans supervise through a dashboard, not through terminals. The dashboard is designed around the four human functions and deliberately hides what would tempt a human into micromanaging the agents.</p>
+
+<h2>What is shown</h2>
+<table>
+  <tr><th style="width:24%">For the function</th><th>What is visible</th></tr>
+  <tr><td>Supervisor</td><td>Per product: queue depth by category, tickets in progress with time in state, blocked items, escalations waiting, pull requests awaiting approval by tier, cost this month against the calibrated expectation, deployment state and last rollback test. Portfolio view across products.</td></tr>
+  <tr><td>Controller</td><td>The review queue with, for each item, the agent's report, the coverage matrix, the CI results, the mutation score delta, the lead agent's recommendation, and a one-click path to the diff for tier 2. Test plans awaiting verification.</td></tr>
+  <tr><td>Co-architect</td><td>Escalations with their context package, the ADR touched, the lead agent's question and recommendation. The drift audit results. The inherited ADRs marked for revisit.</td></tr>
+  <tr><td>Product owner</td><td>Product signal tickets, feature tickets by state, what shipped this week in product language.</td></tr>
+  <tr><td>Reliability and governance</td><td>Incidents, service level objective state, agent identities and their last credential rotation, permission changes, audit trail search, forbidden-action test results, the significant-modification triggers fired and the QA runs they caused.</td></tr>
+</table>
+
+<h2>What is deliberately not shown</h2>
+<ul>
+  <li>Agent working memory and intermediate reasoning. Watching an agent think invites intervention; the escalation protocol is the intervention path.</li>
+  <li>Raw production telemetry inside the review interface. Humans see the QA agent's evidence attached to tickets, in a quoted and labeled form, not live logs.</li>
+  <li>Vanity metrics: number of lines produced, number of commits, number of tickets closed without their category and tier.</li>
+</ul>
+
+<h1 id="s30"><span class="num">29</span>Evolving the methodology: the extension process</h1>
+
+<p>Section 5 states that AICD is open to extension and closed to modification. This section makes it a procedure.</p>
+
+<h2>What may change, and how</h2>
+<table>
+  <tr><th style="width:24%">Category</th><th style="width:36%">Examples</th><th>Procedure</th></tr>
+  <tr><td>Parameters</td><td>Budget multiples, review cadence, coverage and mutation thresholds, autonomy step durations</td><td>Decided by the owning seat, recorded in organizational knowledge, no proposal required. Re-measured after any model change.</td></tr>
+  <tr><td>Tooling</td><td>Which models run which roles, observability platform, ticket system, memory service implementation</td><td>Recorded as an organizational ADR by the owning seat.</td></tr>
+  <tr><td>Extensions</td><td>A new agent role, a new ticket category, a new test family, a new document type, a compliance overlay</td><td>Requires an AICD Change Proposal (below), reviewed by all seats, adopted with a version increment.</td></tr>
+  <tr><td>Core</td><td>The founding principles, the five layers, separation of duties, the tier structure, the migration rule</td><td>Not changed by a team. A team that believes the core is wrong documents the evidence from a real project and proposes it to the methodology's author as a candidate for a new major version.</td></tr>
+</table>
+
+<h2>The AICD Change Proposal</h2>
+<p>A change proposal is a document in organizational knowledge with: the problem observed on a real project, with evidence from the metrics of section 21; the proposed extension; which founding principle it serves; a demonstration that it violates none; what compensation structure, if any, it replaces and the evidence that the limitation is gone; the parameters it introduces and how they are calibrated. It is adopted when every seat has reviewed it and the reliability and governance seat has confirmed it changes no permission without a corresponding control.</p>
+
+<h2>Versioning</h2>
+<p>The methodology carries a version. Parameter and tooling changes do not change it. An adopted extension increments the minor version. A core change, which only the author makes, increments the major version. Every product records which version of AICD it runs, and a product is migrated to a new minor version by adopting the extension; there is nothing else to do, because extensions never invalidate what a product already does.</p>
+
+<h1 id="s31"><span class="num">30</span>Calibration procedures</h1>
+
+<p>Several thresholds in AICD depend on the models in use and on the product. Section 21 defined performance-relative budgets. This section defines the other calibrations. All of them share the same shape: a calibration set with known answers, a measurement, a threshold expressed relative to the measurement, and a re-run on every material change.</p>
+
+<h2>Ticket categorization</h2>
+<ol>
+  <li>During migration phase M4, or during the first steady-state month of a new product, every ticket filed by an agent is categorized by the agent and, in parallel and blind, by the verification lead.</li>
+  <li>The disagreement rate is measured, separately for dangerous disagreements (the agent under-categorized) and safe ones (the agent over-categorized).</li>
+  <li>Automatic validation of Auto and Behavioral tickets is enabled only when the dangerous disagreement rate is below the threshold the verification lead sets. Until then, every category is confirmed by a human.</li>
+  <li>The upgrade-only rule makes safe disagreements harmless; the calibration targets only the dangerous ones.</li>
+</ol>
+
+<h2>Escalation triggers</h2>
+<ol>
+  <li>Record every escalation with its trigger and its outcome: the human agreed with the lead agent's recommendation, disagreed, or judged the escalation unnecessary.</li>
+  <li>Record every tier 1 and 2 pull request in which a human found something the lead agent should have escalated.</li>
+  <li>Triggers that produce mostly unnecessary escalations are narrowed; classes of change that produced missed escalations get a new trigger. Both changes are parameter changes recorded in organizational knowledge.</li>
+  <li>The target is not zero escalations; it is that every escalation is a real decision and no real decision is missed.</li>
+</ol>
+
+<h2>Proposed criteria and simulation findings</h2>
+<p>Two rates from the continuous test environment are tracked from the first run: the share of QA-proposed criteria the verification lead accepts as written, rewrites, or rejects; and the share of simulation findings a human judged not to be defects. A high rejection rate on either narrows the persona set, the significance triggers or the QA agent's instructions; a production defect the simulation should have found widens them. Both are re-measured after any change to personas, triggers or the QA model.</p>
+
+<h2>Retrieval quality</h2>
+<p>A calibration set of context questions (for a representative sample of closed tickets: which specification sections, ADRs, past tickets and modules were actually needed) is run against the memory service whenever the indexer, the embeddings, the code map builder or the model changes. Precision and recall of the returned context package are measured; a drop is treated as a defect of the memory service and blocks the change.</p>
+
+<h2>Significant-modification triggers</h2>
+<p>The list of what counts as a significant modification (section 15) is calibrated backwards: every defect found in production is traced to the change that introduced it, and if that change did not trigger a QA run, the trigger list is extended. Every QA run that finds nothing new is recorded; a trigger that never finds anything is narrowed.</p>
+
+
+<div class="part" id="part8">
+  <div class="label">Part VIII</div>
+  <h1 class="parttitle">Extensions and profiles</h1>
+  <p class="lead">The remaining explorations of the methodology, and the profiles that adapt it to situations its core does not assume: products with mobile clients, environments without live telemetry, regulated domains, and a single operator. Ends with what the first real application taught, and what is still open.</p>
+</div>
+
+<h1 id="s31"><span class="num">31</span>Simulation personas and finding quality</h1>
+
+<h2>Deriving personas from real usage</h2>
+<p>A persona is a synthetic user whose behavior is modeled on a real segment, so that a simulation exercises the product the way real users do rather than the way a test author imagines. Personas are derived from product analytics in four steps, once per quarter or when segments visibly shift:</p>
+<ol>
+  <li><strong>Segment.</strong> The QA agent queries analytics for behavioral clusters: first-session users, returning users, power users, users of a particular journey (payment, upgrade, export), device and network profiles, and drop-off cohorts. Segments are chosen for behavioral difference, not demographics.</li>
+  <li><strong>Characterize.</strong> Each segment becomes a persona definition: goals, the journeys it performs and in what order, session frequency and length, device and network profile, tolerance for failure (does it retry, abandon, or contact support), and the data it typically has (an empty account versus three years of history).</li>
+  <li><strong>Review.</strong> The verification lead and the product owner review the definitions. A persona that no real segment corresponds to is removed; a real segment without a persona is added.</li>
+  <li><strong>Version.</strong> Personas live in <code>spec/criteria/personas.md</code>, versioned like every specification, referenced by identifier from simulation findings.</li>
+</ol>
+
+<h2>How many runs</h2>
+<p>A QA run is sized by coverage, not by a fixed number: every persona through every journey it performs, with enough variation seeds (different data states, timings, network conditions) to exercise the paths that matter. The stop criterion is saturation: when a further batch of runs produces no new unique finding, the run ends. The run budget (section 15) caps the worst case. The first runs on a product are large and later ones are smaller, because saturation arrives faster on a system with fewer defects.</p>
+
+<h2>Separating findings from noise</h2>
+<table>
+  <tr><th style="width:26%">Mechanism</th><th>What it does</th></tr>
+  <tr><td>Fingerprinting</td><td>Every finding is reduced to a signature: journey step, error class, normalized stack or response fingerprint. Findings with the same signature are one ticket with a count, not many tickets.</td></tr>
+  <tr><td>Reproducibility gate</td><td>A finding must reproduce on replay before it becomes a ticket. What does not reproduce goes to a flaky-behavior list, which is itself reviewed, because intermittent failures are sometimes the most important ones.</td></tr>
+  <tr><td>Severity by user impact</td><td>Severity is computed from what the persona could not complete and how many real users the corresponding segment represents, not from the agent's impression of how serious it looks.</td></tr>
+  <tr><td>Known-issue suppression</td><td>Signatures that match an open ticket increment it rather than creating a duplicate; signatures that match a closed ticket reopen it, which is a regression signal.</td></tr>
+  <tr><td>Proposed criteria stay proposed</td><td>Section 15: no finding adds a criterion to the matrix without the verification lead.</td></tr>
+</table>
+<p>Calibration (section 30) tracks two rates: findings that a human judged not to be defects, and production defects the simulation should have found. Both feed the persona and trigger lists.</p>
+
+<h1 id="s32"><span class="num">32</span>Agent instruction design</h1>
+
+<p>Every agent runs from an instruction file. These files are organizational knowledge, versioned in the organizational repository, and they are short: an agent obtains its knowledge of the product through the memory service, not by having the specification pasted into its instructions.</p>
+
+<h2>Three layers of instruction</h2>
+<ul>
+  <li><strong>Organizational base</strong>: what every agent in the company is, the founding principles it operates under, the untrusted-input rule, the budget and blocked-report behavior, the output formats, and the absolute prohibitions. One file, owned by the architect seat.</li>
+  <li><strong>Product base</strong>: what is specific to this product and true for every role in it: where the specification lives, the tier 2 modules by name, the load-bearing paths an agent must never infer as dead, the stack, how to run the tests. One file per product.</li>
+  <li><strong>Role file</strong>: the role's mission, what it reads and may write, its escalation triggers, its model, and the parts of the base it overrides. One file per role per product, derived from a shared role template.</li>
+</ul>
+
+<h2>Rules for writing them</h2>
+<ul>
+  <li>Rules, not descriptions. "Never modify an existing test; escalate instead" beats "be careful with tests".</li>
+  <li>Prohibitions are explicit and enumerated. An agent cannot respect a boundary it was never told about; the load-bearing paths of a repository are named, with the evidence, so no future agent infers them as dead.</li>
+  <li>Escalation triggers are listed with an example each.</li>
+  <li>Every rule carries the methodology section it comes from, and a citation checker verifies the references (section 39).</li>
+  <li>Instruction files are tested: the forbidden-action test proves the prohibitions hold, and the calibration set (section 30) is re-run when a file changes materially.</li>
+  <li>Changing an instruction file is a parameter or extension change under section 29, never a silent edit.</li>
+</ul>
+
+<h1 id="s33"><span class="num">33</span>Design in the loop</h1>
+
+<p>Design artifacts are part of the specification and receive the same discipline: versioned, referenced, verified against the built product.</p>
+<ul>
+  <li><strong>Versioned.</strong> Every screen, flow and component design is exported as a file with a stable identifier into <code>spec/design/</code>, alongside a link to its editable source. The exported file is what the agents consume and what the drift audit compares against; the source is for humans.</li>
+  <li><strong>Referenced.</strong> Each PRD journey names the design identifiers it is built from; acceptance criteria that concern appearance or layout reference the same identifiers. A design without a journey, or a journey without a design, is a divergence.</li>
+  <li><strong>Verified.</strong> The QA agent compares the built product against the design: structural checks (the components the design specifies are present and in order), visual comparison with a tolerance, accessibility checks, and responsive behavior at the breakpoints the design defines. Failures are findings like any other.</li>
+  <li><strong>Changed through tickets.</strong> A design change that alters a journey is decisional; one that alters appearance only is behavioral; a design produced for a new roadmap phase is part of that phase's set (section 23). The product owner approves designs; the verification lead approves the criteria that reference them.</li>
+</ul>
+
+<h1 id="s34"><span class="num">34</span>The reference organizational repository</h1>
+
+<p>Layer 2 of memory is a repository. This section fixes its shape so that every AICD organization's repository has the same structure and a product can be moved between them.</p>
+<table>
+  <tr><th style="width:26%">Path</th><th>Contents</th></tr>
+  <tr><td><code>methodology/</code></td><td>This document, its section index in machine-readable form, the version in force, and the adopted Change Proposals</td></tr>
+  <tr><td><code>roles/</code></td><td>The organizational base instruction file, the role template, and one reference role file per agent role</td></tr>
+  <tr><td><code>templates/</code></td><td>Ticket, pull request report, acceptance criterion, ADR, blocked report, post-mortem, escalation, Change Proposal, calibration record</td></tr>
+  <tr><td><code>gates/</code></td><td>Tool-agnostic definitions of each gate (what it checks, what input, what constitutes failure, the planted defect that proves it), with example implementations per stack</td></tr>
+  <tr><td><code>policies/</code></td><td>Security policy, stack selection policy, the significant-modification list, the adversarial review checklist, the data classification scheme</td></tr>
+  <tr><td><code>calibration/</code></td><td>Calibration set formats, procedures, and the organization's current measured baselines</td></tr>
+  <tr><td><code>profiles/</code></td><td>The extension profiles of this Part, and any the organization has adopted</td></tr>
+  <tr><td><code>products.md</code></td><td>The portfolio: every product, its AICD version, its stack ADR, its fleet, its seats</td></tr>
+</table>
+<p>The first instance of this repository is produced by the first migration an organization runs, from the artifacts that migration creates. The methodology's next version will ship a minimal reference instance.</p>
+
+<h1 id="s35"><span class="num">35</span>Profile: products with mobile clients</h1>
+
+<p>The core of AICD assumes that shipping is instantaneous and reversible: merge, tag, deploy, and if it fails, redeploy the previous tag. A native mobile client breaks every part of that assumption. Release goes through a store review measured in hours or days. Users update when they choose, so several versions run at once for weeks. There is no redeploying a previous tag: the only way to change what runs on a device is to ship a new version through the same slow path. And the client binary is in the hands of anyone who wants to read it. This profile adapts the methodology to those facts without weakening it.</p>
+
+<h2>What changes</h2>
+<table>
+  <tr><th style="width:24%">Core assumption</th><th style="width:30%">Mobile reality</th><th>AICD adaptation</th></tr>
+  <tr><td>Deploy is instant</td><td>Store review, then staged rollout over days</td><td>The "ship" step becomes a release train (below). The tag is a release candidate; promotion goes through internal testing, beta, staged percentages, then full availability.</td></tr>
+  <tr><td>Rollback is redeploy the previous tag</td><td>Cannot force a device to downgrade</td><td>Rollback is redefined as: halt the staged rollout, and disable the behavior server-side. Every behavioral change in the client ships behind a remotely controlled flag with a kill switch. A change that cannot be disabled remotely is tier 2 by definition.</td></tr>
+  <tr><td>One version in production</td><td>N versions live at once</td><td>A compatibility window ADR: which client versions the backend supports, for how long, and the forced-update policy. Contract tests run both ways: new client against current backend, and every supported client version against the new backend.</td></tr>
+  <tr><td>Secrets on the server</td><td>The binary is readable</td><td>Nothing secret in the client. Vendor keys are held by the backend; the client authenticates to the backend only. Signing keys and store credentials are tier 2, human-held, used by CI through the secrets manager.</td></tr>
+  <tr><td>Verification runs on one platform</td><td>Many OS versions and devices</td><td>The continuous test environment includes a device matrix (emulators and real devices) chosen from the analytics device profile; on-device end-to-end tests are a required test type.</td></tr>
+  <tr><td>External constraints are your own</td><td>Store policies govern permissions, privacy labels, payments</td><td>Store policy is treated as an external contract. Any change to permissions, entitlements, data collection declarations, in-app purchase, push configuration or deep links is decisional.</td></tr>
+</table>
+
+<h2>The release train</h2>
+<p>Because each store submission costs days, client changes are batched into trains on a fixed cadence (weekly or biweekly), and the train is the unit that goes through the full QA run. Steps:</p>
+<ol>
+  <li><strong>Freeze.</strong> The train's tickets are merged; the release branch is cut from the tag. Anything later waits for the next train, unless it is an incident.</li>
+  <li><strong>Candidate verification.</strong> The exhaustive QA run executes against the candidate on the device matrix, plus the two-way compatibility tests, plus a store-compliance checklist maintained in organizational knowledge.</li>
+  <li><strong>Internal and beta tracks.</strong> The candidate goes to the internal track, then to a beta cohort. Crash-free sessions and journey completion on the beta cohort are gate metrics.</li>
+  <li><strong>Submission.</strong> The operations agent prepares store metadata, changelog and screenshots from the tickets; a human submits. A store rejection is handled as an incident with its own runbook, since it blocks every ticket in the train.</li>
+  <li><strong>Staged rollout.</strong> Availability rises through percentages on a schedule. The operations agent holds the rollout automatically if crash-free sessions or a journey completion rate on the new version fall below the threshold, and flips kill switches for the behaviors that the failing version introduced.</li>
+  <li><strong>Full availability and observation.</strong> The version is fully released; the adoption curve is tracked; old versions leave the compatibility window on the ADR's schedule.</li>
+</ol>
+
+<h2>Additional risk tiers and triggers</h2>
+<ul>
+  <li>Tier 2, in addition to the core list: any change not behind a remote flag; native modules and platform SDK upgrades; the minimum supported OS or client version; signing, entitlements, permissions, privacy declarations; in-app purchase and subscription logic; push notification setup; deep link handling; offline data storage and migration on device.</li>
+  <li>Significant modification, in addition to the core list: any change to the build configuration, to a native dependency, to on-device storage, or to the compatibility window.</li>
+  <li>Escalation trigger: any client change that requires a backend change to work, because it forces coordination across two release cadences.</li>
+</ul>
+
+<h2>Verification specifics</h2>
+<ul>
+  <li>On-device end-to-end tests are mandatory for every journey, on the device matrix.</li>
+  <li>Upgrade tests: install the previous version with realistic on-device data, upgrade to the candidate, verify data and session survive. On-device migrations are treated like database migrations: backward compatible and rehearsed.</li>
+  <li>Offline and degraded-network simulation is a required persona dimension.</li>
+  <li>Binary inspection is a required security check: no secrets, no debug endpoints, no verbose logging in release builds.</li>
+</ul>
+
+<h2>Observability specifics</h2>
+<ul>
+  <li>Service level objectives are per version: crash-free sessions, journey completion, and API error rate by client version.</li>
+  <li>Client telemetry is batched and delayed; the operations agent's incident logic accounts for the lag rather than reading silence as health.</li>
+  <li>The kill switch and rollout halt are runbooks the operations agent may execute; re-enabling is human.</li>
+</ul>
+
+<h2>Web clients with the same problem</h2>
+<p>A web application with a service worker, an installed progressive web app, or long-lived client sessions has a milder version of every issue above: old client code keeps running after a deploy. The same remedies apply in proportion: versioned APIs with a compatibility window, flags for behavioral changes, and a forced-refresh mechanism.</p>
+
+<h1 id="s36"><span class="num">36</span>Profile: operating without live telemetry</h1>
+
+<p>The core assumes the operations, QA and product signal agents read live production telemetry. Some deployments forbid it: on-premises installations, air-gapped networks, zero-telemetry privacy commitments. Layer 4 then has to work on what can be exported rather than on what can be observed.</p>
+<ul>
+  <li><strong>Diagnostic bundles.</strong> The product produces, on operator request or on a schedule, an encrypted bundle of structured diagnostics: error records already passed through the sanitization barrier (section 8), aggregate metrics, configuration fingerprint, version. The bundle schema is part of the specification. The operations agent ingests bundles asynchronously through a bridge that enforces the untrusted-input rule and the barrier a second time.</li>
+  <li><strong>Local simulation mirror.</strong> The continuous test environment is instantiated inside the disconnected perimeter, with its own QA agent running on models permitted there, producing findings as files that leave the perimeter as part of the bundle. Personas are derived from whatever aggregate usage the operator is willing to export, or from the operator's description when nothing can leave.</li>
+  <li><strong>Feedback loop with lag.</strong> The loop of section 16 still closes, on the cadence of bundle delivery. Incident detection becomes the operator's responsibility, supported by an on-site runbook; the methodology's contribution is that every fix still ends in a specification update and a new criterion.</li>
+  <li><strong>Model choice.</strong> The permitted model provider inside the perimeter, possibly a self-hosted model, is a stack ADR with the calibration procedure re-run for it.</li>
+</ul>
+
+<h1 id="s37"><span class="num">37</span>Profile: regulated domains</h1>
+
+<p>Regulated products (payments, health, finance, public sector, personal data under strict regimes) do not need a different methodology; they need the methodology's evidence mapped to their framework's controls, plus a few additions.</p>
+
+<h2>Evidence mapping</h2>
+<table>
+  <tr><th style="width:30%">Control family (any framework)</th><th>AICD evidence</th></tr>
+  <tr><td>Change management</td><td>The traceability chain: line to commit to ticket to specification section to human approval, with the tier and the reviewers, for every change</td></tr>
+  <tr><td>Separation of duties</td><td>Coder, reviewer, tester and operator are distinct identities with distinct permissions; tier 2 requires two independent reviews</td></tr>
+  <tr><td>Access control</td><td>The permission manifest, per-identity short-lived credentials, the audit trail of permission changes, the forbidden-action test results</td></tr>
+  <tr><td>Testing and validation</td><td>Acceptance criteria, coverage matrix, mutation scores, QA run reports, the planted-defect demonstration for every gate</td></tr>
+  <tr><td>Incident management</td><td>Incident tickets, post-mortems, and the criteria and runbook changes they produced</td></tr>
+  <tr><td>Data protection</td><td>Data classification, anonymization runbooks and their verification, the sanitization barrier, the record of what is sent to which model provider</td></tr>
+  <tr><td>Logging and monitoring</td><td>The immutable audit trail and the observability specification</td></tr>
+</table>
+
+<h2>Additions for regulated products</h2>
+<ul>
+  <li>Any change touching regulated data or a regulated process is tier 2, whatever else it is.</li>
+  <li>Data classification decides what may be sent to an external model provider at all. Where regulated data cannot leave, the agents work on anonymized or synthetic data only, or on models hosted within the permitted boundary.</li>
+  <li>Retention and residency rules for the audit trail and operational memory follow the framework, and are themselves specified and tested.</li>
+  <li>Evidence export is a tool: a human can produce, for any time window, the complete chain for every change, in a form an auditor can read.</li>
+  <li>Human accountability is explicit: every tier 2 approval names the accountable human, and the methodology's agents are never the accountable party.</li>
+  <li>The overlay itself is adopted as an extension through a Change Proposal, so that the framework's specific controls are versioned with the methodology.</li>
+</ul>
+
+<h1 id="s38"><span class="num">38</span>Profile: the single operator</h1>
+
+<p>Tier 2 requires two humans. A single operator cannot provide that, and the core does not bend. This profile records the only accepted substitute, so that a solo operator runs the methodology with a documented, expiring exception rather than a silent gap. All of the following are required together for every tier 2 change:</p>
+<ol>
+  <li>Independent review by a different model than the coder, with a hard veto rather than an advisory opinion, working through the adversarial checklist.</li>
+  <li>The operator's own full diff read, in a separate session from the one in which the plan was approved, at least several hours later.</li>
+  <li>Rollback rehearsed on staging for that specific change before merge, and for changes with data migrations, a snapshot taken immediately before the migration with a rehearsed restore.</li>
+  <li>Migrations backward compatible with the previous tag, behind a flag where the change is behavioral.</li>
+  <li>Limited rollout where the product supports it, with the operations agent authorized to halt.</li>
+</ol>
+<p>The exception is recorded as an ADR with status accepted and an expiry condition: the day a second seat is filled. Until then, the operator merges every tier 1 and tier 2 change personally; no agent merges above tier 0.</p>
+
+<h1 id="s39"><span class="num">39</span>Lessons from the first application</h1>
+
+<p>The first migration under AICD, on a live product, produced findings that the methodology now carries as rules. Each is recorded here with the failure that earned it.</p>
+
+<table>
+  <tr><th style="width:30%">What happened</th><th>Rule adopted</th></tr>
+  <tr><td>A ticket instructed the deletion of a directory described as a dead legacy backend. The agent's first gate, prove which component serves production, showed the directory owned the live database's migration history and built two of five production images.</td><td><strong>Destructive tickets state a belief and its source, never a conclusion, and proof precedes action.</strong> Any ticket that deletes, drops, revokes or rewrites begins with a discovery stage that changes nothing and ends with the human's decision. The ticket template carries this.</td></tr>
+  <tr><td>A rollback point was named in the backlog as if it existed. It did not.</td><td><strong>Every precondition a ticket names is verified to exist at approval time, not at execution time.</strong></td></tr>
+  <tr><td>Two CI workflows sat intact behind a manual trigger and a build target had no recipe, while every document cited them as gates. A newly written citation checker returned failure on clean and dirty trees alike and looked like it was working.</td><td><strong>"Present but reporting nothing" is a named defect class.</strong> A gate is installed only after it has been seen to fail on a planted defect (section 14), every artifact that cites a gate names the trigger that fires it, and a liveness check fails loudly when an expected gate has not run inside its window.</td></tr>
+  <tr><td>Four drafting agents produced eleven fabricated section references, one of which would have removed a required check.</td><td><strong>References are checked mechanically.</strong> The methodology's section index is machine-readable, a checker validates every reference in specification, operational memory and instruction files, and the drafting-error rate is a calibration metric.</td></tr>
+  <tr><td>An inventory of the system, containing no secret values, concentrated every account identifier, project reference and secret path onto one page.</td><td><strong>Aggregation is classification.</strong> Identifiers that are individually harmless are stored apart from the documents that cite them, with their own memory scope, and the data classification names aggregation as a category.</td></tr>
+  <tr><td>Credentials for vendors no longer integrated were still live, some only in backup files, where no rotation cycle would ever reach them.</td><td><strong>Revocation is a migration step distinct from rotation.</strong> Phase M1 revokes every credential whose integration no longer exists before rotating those that do, and the env report covers backup and archive files.</td></tr>
+  <tr><td>The repository had an undocumented dual-runtime architecture in which a "retired" service owned the schema. Nothing in the tree said so.</td><td><strong>Load-bearing paths are named in the product instruction base, with evidence.</strong> An agent cannot respect a dependency it was invited to infer as dead.</td></tr>
+  <tr><td>Two migration chains wrote to one database with no down-migration and no snapshot, and had already produced one incident repaired by hand.</td><td><strong>A deploy path with no way back is tier 2 and blocks agent autonomy on migrations</strong> until a pre-migration snapshot with a rehearsed restore exists.</td></tr>
+</table>
+
+<p>The pattern across these is worth stating once: none of the failures were the agents' inventions. Every one was a human belief written into an artifact as a fact, or a control that existed on paper. The methodology's gates caught them because the gates demanded proof rather than agreement.</p>
+
+<h1 id="s40"><span class="num">40</span>Open questions and next explorations</h1>
+
+<p>Version 0.3 closes the exploration list of version 0.2. What remains is validation and one deliverable.</p>
+
+<h3>To validate on real products</h3>
+<ul>
+  <li>The migration procedure end to end, with the actual duration of each phase recorded, on the product where it is now running.</li>
+  <li>The mobile profile on a product with a native client, in particular whether the release train cadence and the rollout-halt thresholds are right in practice.</li>
+  <li>The single-operator profile: whether its five substitutes hold up over months, and what the second seat changes when it arrives.</li>
+  <li>The sanitization barrier against real production data, including the false-rejection rate on legitimate error messages.</li>
+  <li>The calibration procedures, with measured rates rather than provisional ones.</li>
+</ul>
+
+<h3>To deliver</h3>
+<ul>
+  <li>The reference organizational repository of section 34, extracted from the first migration's artifacts.</li>
+  <li>The adversarial review checklist as a versioned policy, seeded from the first post-mortems.</li>
+</ul>
+<div class="part" id="appx">
+  <div class="label">Appendices</div>
+  <h1 class="parttitle">Templates, glossary, history</h1>
+</div>
+
+<h1 id="a1"><span class="num">A</span>Templates</h1>
+
+<h2>A.1 Acceptance criterion</h2>
+<table class="meta-table">
+  <tr><td>ID</td><td>Product code, feature code, sequence number. Example: <code>PAY-REFUND-004</code></td></tr>
+  <tr><td>Type</td><td>functional, security, performance, resilience, simulation</td></tr>
+  <tr><td>Precondition</td><td>The state of the system and the actor before the action</td></tr>
+  <tr><td>Action</td><td>What the actor does, in observable terms</td></tr>
+  <tr><td>Expected result</td><td>What must be observable afterwards, including side effects and what must not happen</td></tr>
+  <tr><td>Risk tier</td><td>0, 1 or 2, according to the area touched</td></tr>
+  <tr><td>Notes</td><td>Edge cases, related criteria, known limitations</td></tr>
+</table>
+
+<h2>A.2 Ticket</h2>
+<table class="meta-table">
+  <tr><td>Title</td><td>One line, imperative</td></tr>
+  <tr><td>Category</td><td>Auto, Behavioral, Decisional, Product signal</td></tr>
+  <tr><td>Proposed risk tier</td><td>0, 1 or 2</td></tr>
+  <tr><td>Specification anchor</td><td>Section implemented, violated or to be modified</td></tr>
+  <tr><td>Acceptance criteria</td><td>Identifiers covered by this ticket</td></tr>
+  <tr><td>Evidence (defects)</td><td>Reproduction steps, logs, traces, session replays, severity, affected users</td></tr>
+  <tr><td>Budget</td><td>Max attempts, max wall-clock time, max tokens</td></tr>
+  <tr><td>Filed by</td><td>Human or agent identity</td></tr>
+  <tr><td>Closing requirements</td><td>Specification update reference, new criteria reference</td></tr>
+</table>
+
+<h2>A.3 Pull request report</h2>
+<table class="meta-table">
+  <tr><td>Ticket and anchor</td><td>Links</td></tr>
+  <tr><td>Plan</td><td>The plan written before implementation, and deviations from it</td></tr>
+  <tr><td>Tests</td><td>Added and modified tests, with the reason for each</td></tr>
+  <tr><td>Coverage matrix</td><td>Criterion identifier to test name</td></tr>
+  <tr><td>Not tested</td><td>What was deliberately not tested and why</td></tr>
+  <tr><td>Risk tier</td><td>Self-assessed, with justification</td></tr>
+  <tr><td>Rollback plan</td><td>Required for tier 2</td></tr>
+  <tr><td>Escalations</td><td>Any trigger encountered and how it was resolved</td></tr>
+</table>
+
+<h2>A.4 Architecture decision record</h2>
+<table class="meta-table">
+  <tr><td>Title and identifier</td><td>Example: <code>ADR-012: Event store for order history</code></td></tr>
+  <tr><td>Status</td><td>Proposed, accepted, superseded (by), deprecated</td></tr>
+  <tr><td>Context</td><td>The forces at play: requirements, constraints, what prompted the decision</td></tr>
+  <tr><td>Options considered</td><td>Each option with its trade-offs</td></tr>
+  <tr><td>Decision</td><td>What was chosen and why</td></tr>
+  <tr><td>Consequences</td><td>What becomes easier, what becomes harder, what the agents must now respect</td></tr>
+  <tr><td>Escalation scope</td><td>Which changes in this area must be escalated to a human</td></tr>
+</table>
+
+<h2>A.5 Blocked report</h2>
+<table class="meta-table">
+  <tr><td>Ticket</td><td>Link</td></tr>
+  <tr><td>Budget consumed</td><td>Attempts, time, tokens</td></tr>
+  <tr><td>Approaches tried</td><td>Each approach and why it failed</td></tr>
+  <tr><td>Hypothesis</td><td>Why the agent believes the ticket is blocked</td></tr>
+  <tr><td>What it would try next</td><td>With the reasoning</td></tr>
+  <tr><td>What it needs from a human</td><td>A decision, information, a permission, a specification clarification</td></tr>
+</table>
+
+<h1 id="a2"><span class="num">B</span>Glossary</h1>
+
+<table>
+  <tr><th style="width:28%">Term</th><th>Meaning in AICD</th></tr>
+  <tr><td>Acceptance criterion</td><td>A structured, plain-language statement of one observable behavior the system must have. Authored by humans, mapped to tests by agents.</td></tr>
+  <tr><td>ADR</td><td>Architecture decision record. The document that records a significant design decision and defines what must be escalated in its area.</td></tr>
+  <tr><td>Agent</td><td>An AI system given one role, its own instructions, its own context and its own permissions.</td></tr>
+  <tr><td>Blocked report</td><td>The document a coder agent produces when it exhausts its budget, instead of continuing.</td></tr>
+  <tr><td>Canonical knowledge</td><td>The versioned specification of a product. The source of truth.</td></tr>
+  <tr><td>Coverage matrix</td><td>The table mapping each acceptance criterion to the tests that prove it. Enforced by CI.</td></tr>
+  <tr><td>Decisional ticket</td><td>A ticket that requires human approval before any work starts.</td></tr>
+  <tr><td>Drift audit</td><td>The weekly comparison of canonical knowledge against the actual code.</td></tr>
+  <tr><td>Escalation</td><td>A question raised by an agent to a human, with a recommendation, when a decision belongs to a person.</td></tr>
+  <tr><td>Fleet mode</td><td>The default mode in which coder agents work validated tickets autonomously under the lead agent.</td></tr>
+  <tr><td>Lead agent</td><td>The agent that orders, assigns and reviews the coders' work and escalates to humans.</td></tr>
+  <tr><td>Memory service</td><td>The tool connection through which agents access the unified memory, with scopes enforced.</td></tr>
+  <tr><td>Mutation testing</td><td>Introducing deliberate faults into the code to verify that the tests detect them.</td></tr>
+  <tr><td>Operational memory</td><td>The append-only log of tickets, incidents, decisions and attempts.</td></tr>
+  <tr><td>Pairing mode</td><td>A human directly driving a coding agent on one ticket.</td></tr>
+  <tr><td>Product signal</td><td>A usage insight that goes to the product owner rather than to the coder queue.</td></tr>
+  <tr><td>Risk tier</td><td>The 0, 1, 2 classification that determines merge requirements.</td></tr>
+  <tr><td>Separation of duties</td><td>The rule that the agent producing work never judges it.</td></tr>
+  <tr><td>Specification anchor</td><td>The section of the specification a ticket implements, violates or modifies.</td></tr>
+  <tr><td>Significant modification</td><td>A merged change that alters a journey, a business rule, a data model, a contract, a permission, an integration or a non-functional characteristic; triggers an exhaustive QA run.</td></tr>
+  <tr><td>As-built specification</td><td>Documents describing a product exactly as it exists, flaws included, produced during migration before any intended change is decided.</td></tr>
+  <tr><td>Characterization criteria</td><td>Acceptance criteria that describe current observed behavior, used as the verification baseline of a migrated product.</td></tr>
+  <tr><td>Calibration set</td><td>A small set of tickets or questions with known correct outcomes, used to measure model or memory-service performance and set relative thresholds.</td></tr>
+  <tr><td>Divergence register</td><td>The list of every difference between intended and as-built behavior, each resolved by a human decision.</td></tr>
+  <tr><td>Inherited ADR</td><td>A decision already embedded in a migrated codebase, recorded with status "inherited" and revisit conditions.</td></tr>
+  <tr><td>AICD Change Proposal</td><td>The document through which an extension to the methodology is proposed, reviewed and adopted.</td></tr>
+  <tr><td>Sanitization barrier</td><td>Deterministic code that converts production-derived data into typed records before it may enter operational memory; raw evidence is stored apart and never indexed.</td></tr>
+  <tr><td>Foundation set / phase set</td><td>The specification documents required before any code, and those written just in time per roadmap phase.</td></tr>
+  <tr><td>Release train</td><td>For mobile clients, the batched, scheduled release candidate that goes through candidate verification, beta, submission and staged rollout.</td></tr>
+  <tr><td>Kill switch</td><td>A remotely controlled flag that disables a client behavior without a new release; the mobile profile's substitute for rollback.</td></tr>
+  <tr><td>Present but reporting nothing</td><td>The defect class of a gate that exists and passes without checking anything, or never runs; the reason every gate must be seen to fail before it is trusted.</td></tr>
+  <tr><td>Upgrade-only rule</td><td>Agents may make a ticket safer (higher category) but never riskier; only humans downgrade.</td></tr>
+</table>
+
+<h1 id="a3"><span class="num">C</span>Document history</h1>
+
+<table>
+  <tr><th style="width:14%">Version</th><th style="width:20%">Date</th><th>Changes</th></tr>
+  <tr><td>0.1</td><td>September 2026</td><td>First consolidated draft. Founding principles, five-layer architecture, agent team and separation of duties, memory architecture, specification system, feature flow, ticket categories, fleet and pairing modes with escalation protocol, git and release workflow, verification cycle and test types, continuous test environment, observability loop, permission model, human roles, hiring, stack policy, economics, failure modes, open questions, templates and glossary.</td></tr>
+  <tr><td>0.2</td><td>September 2026</td><td>Section 15 revised: continuous test environment becomes event-driven, exhaustive runs on significant modifications. Section 21 revised: no absolute cost baseline, performance-relative thresholds and calibration sets. New Part VI: starting a new product (gates G0 to G7, inherited golden rules, specification set, tag promotion replacing the three-branch model) and migrating an existing product (phases M0 to M5, access attribution at migration time, the fourteen as-built documents, verification baseline, progressive autonomy, exit checklist, special cases). New Part VII: memory service implementation, multi-product operation, security and compliance in depth, fleet dashboard, extension process and versioning, calibration procedures. Open questions rewritten. Glossary extended.</td></tr>
+  <tr><td>0.3</td><td>September 2026</td><td>External critique reviewed and adopted where warranted: three-layer review with deterministic checks and an adversarial checklist (section 7); sanitization barrier between telemetry and operational memory (section 8); conflict handling at scale with declared scope and a lock table (section 12); proposed criteria and QA run budgets (section 15); foundation set and phase set replacing the all-upfront specification (section 23). New Part VIII: simulation personas and finding quality, agent instruction design, design in the loop, the reference organizational repository, profiles for mobile clients, disconnected operation, regulated domains and the single operator, lessons from the first application recorded as rules, open questions rewritten. New rule in section 14: a gate is installed only when it has been seen to fail on a planted defect.</td></tr>
+</table>
+
+<p class="small" style="margin-top:12mm">AICD: Artificial Intelligence Centered Development, by Alim Sahane. This document is a living methodology guide and is expected to evolve as the open questions in section 23 are explored and as the methodology is applied to real products. The founding principles and the structural core are stable; parameters and tooling choices are extension points.</p>
+
+<div class="authorpage" id="author">
+  <div class="wrap">
+    <div class="photo"><img src="portrait_circle.png" alt="Portrait of the author"></div>
+    <div class="info">
+      <p class="label">About the author</p>
+      <h1 class="name">Ngatcha Sahane Rachid Alim</h1>
+      <p class="role">Software engineer, ML engineer, and author of the AICD Methodology.</p>
+      <table class="contact">
+        <tr><td>GitHub</td><td><a href="https://github.com/rachidsahane">github.com/rachidsahane</a></td></tr>
+        <tr><td>LinkedIn</td><td><a href="https://www.linkedin.com/in/alim-sahane/">linkedin.com/in/alim-sahane</a></td></tr>
+        <tr><td>Email</td><td><a href="mailto:rachidsahane007@gmail.com">rachidsahane007@gmail.com</a></td></tr>
+      </table>
+    </div>
+  </div>
+  <p class="bio">AICD grew out of building and operating several production SaaS products with AI coding agents, and out of the question that follows: how to organize a team that maintains and grows software no human wrote. The methodology is applied on live products and revised from what those applications teach. Feedback, critiques and reports of applying AICD on other products are welcome through any of the channels above.</p>
+</div>
+
+</body>
+</html>
