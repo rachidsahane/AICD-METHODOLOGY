@@ -121,6 +121,12 @@ if not local:
     raise SystemExit(1)
 PY
 
+# ------------------------------------------------- anchors must be unambiguous
+# A duplicate id does not fail the render, it silently sends every link to the
+# first occurrence, so the contents can print a wrong page number and nothing
+# complains. Check before spending time on the render.
+python3 "${REPO_ROOT}/build/check_anchors.py" "${SRC_HTML}"
+
 # ------------------------------------------------------------------- render
 mkdir -p "${OUT_DIR}"
 PDF="${OUT_DIR}/AICD-Methodology-v${VERSION}.pdf"

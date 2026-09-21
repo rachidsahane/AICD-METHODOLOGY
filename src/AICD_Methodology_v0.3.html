@@ -188,16 +188,16 @@ tr:nth-child(even) td { background: #fafbfc; }
   <li><a href="#s22">22. Failure modes and safeguards</a></li>
 
   <li class="tocpart"><a href="#part6">Part VI: Applying AICD</a></li>
-  <li><a href="#s24">23. Starting a new product under AICD</a></li>
-  <li><a href="#s25">24. Migrating an existing product into AICD</a></li>
+  <li><a href="#s23">23. Starting a new product under AICD</a></li>
+  <li><a href="#s24">24. Migrating an existing product into AICD</a></li>
 
   <li class="tocpart"><a href="#part7">Part VII: Deep dives</a></li>
-  <li><a href="#s26">25. Memory service: implementation model</a></li>
-  <li><a href="#s27">26. Operating several products with one team</a></li>
-  <li><a href="#s28">27. Security and compliance in depth</a></li>
-  <li><a href="#s29">28. The fleet dashboard</a></li>
-  <li><a href="#s30">29. Evolving the methodology: the extension process</a></li>
-  <li><a href="#s31">30. Calibration procedures</a></li>
+  <li><a href="#s25">25. Memory service: implementation model</a></li>
+  <li><a href="#s26">26. Operating several products with one team</a></li>
+  <li><a href="#s27">27. Security and compliance in depth</a></li>
+  <li><a href="#s28">28. The fleet dashboard</a></li>
+  <li><a href="#s29">29. Evolving the methodology: the extension process</a></li>
+  <li><a href="#s30">30. Calibration procedures</a></li>
 
   <li class="tocpart"><a href="#part8">Part VIII: Extensions and profiles</a></li>
   <li><a href="#s31">31. Simulation personas and finding quality</a></li>
@@ -871,7 +871,7 @@ tr:nth-child(even) td { background: #fafbfc; }
   <p class="lead">How a product enters the methodology: either born inside it, or migrated into it from a codebase that already exists. Both paths end in the same steady state described in Parts II and III; they differ in what has to exist before the agent fleet is allowed to work.</p>
 </div>
 
-<h1 id="s24"><span class="num">23</span>Starting a new product under AICD</h1>
+<h1 id="s23"><span class="num">23</span>Starting a new product under AICD</h1>
 
 <p>A new product under AICD follows a fixed sequence of gates. Nothing is built before the specification exists; no feature is added without a plan; no human touches the code. The sequence comes from the Vibe Engineer process that preceded AICD (framing session, thirteen documents, phased build loop, three golden rules) and extends it with the agent team, the verification layer and the governance of Parts II and III.</p>
 
@@ -944,7 +944,7 @@ tr:nth-child(even) td { background: #fafbfc; }
   <p>The solo Vibe Engineer process used three long-lived branches (dev, staging, main) because one person and one agent needed a simple safety ladder. In AICD the ladder is provided by environments and tag promotion, not by branches: the fleet works on many short-lived ticket branches, merges to a single protected main, and the same tag is deployed to staging and then promoted to production. This gives the same safety with fewer merge conflicts and a clean audit trail. Teams migrating from the three-branch model keep their environments and drop the two extra branches.</p>
 </div>
 
-<h1 id="s25"><span class="num">24</span>Migrating an existing product into AICD</h1>
+<h1 id="s24"><span class="num">24</span>Migrating an existing product into AICD</h1>
 
 <p>This is the harder path, and the one most teams will actually take: a product already exists, already has users, and was built either by vibe coding (with or without documents), by a traditional team, or by a mix. The agents cannot be trusted with it until they know it, and the humans cannot verify agent work on it until they have a baseline of what it does today. Migration is therefore mostly a documentation and access exercise, done in a strict order, with the fleet kept out until the last step.</p>
 
@@ -1067,7 +1067,7 @@ tr:nth-child(even) td { background: #fafbfc; }
   <p class="lead">The remaining aspects of the methodology in depth: how the memory service works, how several products are run by one team, the security model of the agent fleet, what the humans see, how the methodology itself evolves, and how its thresholds are calibrated.</p>
 </div>
 
-<h1 id="s26"><span class="num">25</span>Memory service: implementation model</h1>
+<h1 id="s25"><span class="num">25</span>Memory service: implementation model</h1>
 
 <p>Section 8 defined what memory contains and who may see it. This section defines how a memory service is built so that the definition holds in practice. The design is tool-agnostic: any implementation that satisfies these components and rules is an AICD memory service.</p>
 
@@ -1094,7 +1094,7 @@ tr:nth-child(even) td { background: #fafbfc; }
 <h2>Multi-product layout</h2>
 <p>One memory service serves the whole organization. Layer 2 is indexed once; layers 1 and 3 are indexed per product and partitioned by product identifier. An agent identity belongs to one product; cross-product retrieval exists only for the architect's assistant agent and the organizational drift audit.</p>
 
-<h1 id="s27"><span class="num">26</span>Operating several products with one team</h1>
+<h1 id="s26"><span class="num">26</span>Operating several products with one team</h1>
 
 <p>AICD is designed for a small human team supervising several products, each potentially on a different stack. The structure that makes this workable:</p>
 <ul>
@@ -1107,7 +1107,7 @@ tr:nth-child(even) td { background: #fafbfc; }
   <li><strong>Portfolio dashboard.</strong> Section 30 describes the per-product view; the organizational view aggregates queue depth, escalation rate, cost, and incident state across products, so that a supervisor can see in one screen which product needs attention.</li>
 </ul>
 
-<h1 id="s28"><span class="num">27</span>Security and compliance in depth</h1>
+<h1 id="s27"><span class="num">27</span>Security and compliance in depth</h1>
 
 <h2>Threat model of the agent fleet</h2>
 <table>
@@ -1139,7 +1139,7 @@ tr:nth-child(even) td { background: #fafbfc; }
 <h2>Audit and compliance</h2>
 <p>The audit trail (every agent and human action, with identity, ticket, tool, input, output and time) is immutable and retained according to the organization's policy. Combined with the traceability chain of section 13 (line to commit to ticket to specification to decision), it answers the questions any compliance framework asks: who changed what, why, who approved it, and what proved it was correct. Regulated products add their framework's specific controls as an extension in organizational knowledge; the core provides the evidence.</p>
 
-<h1 id="s29"><span class="num">28</span>The fleet dashboard</h1>
+<h1 id="s28"><span class="num">28</span>The fleet dashboard</h1>
 
 <p>Humans supervise through a dashboard, not through terminals. The dashboard is designed around the four human functions and deliberately hides what would tempt a human into micromanaging the agents.</p>
 
@@ -1160,7 +1160,7 @@ tr:nth-child(even) td { background: #fafbfc; }
   <li>Vanity metrics: number of lines produced, number of commits, number of tickets closed without their category and tier.</li>
 </ul>
 
-<h1 id="s30"><span class="num">29</span>Evolving the methodology: the extension process</h1>
+<h1 id="s29"><span class="num">29</span>Evolving the methodology: the extension process</h1>
 
 <p>Section 5 states that AICD is open to extension and closed to modification. This section makes it a procedure.</p>
 
@@ -1179,7 +1179,7 @@ tr:nth-child(even) td { background: #fafbfc; }
 <h2>Versioning</h2>
 <p>The methodology carries a version. Parameter and tooling changes do not change it. An adopted extension increments the minor version. A core change, which only the author makes, increments the major version. Every product records which version of AICD it runs, and a product is migrated to a new minor version by adopting the extension; there is nothing else to do, because extensions never invalidate what a product already does.</p>
 
-<h1 id="s31"><span class="num">30</span>Calibration procedures</h1>
+<h1 id="s30"><span class="num">30</span>Calibration procedures</h1>
 
 <p>Several thresholds in AICD depend on the models in use and on the product. Section 21 defined performance-relative budgets. This section defines the other calibrations. All of them share the same shape: a calibration set with known answers, a measurement, a threshold expressed relative to the measurement, and a re-run on every material change.</p>
 
