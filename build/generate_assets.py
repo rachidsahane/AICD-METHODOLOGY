@@ -286,6 +286,64 @@ def build_portrait(path):
     return out.size
 
 
+# -------------------------------------------------------------- social preview
+
+def build_social(path, cover_path):
+    """The 1280x640 card that link previews show on LinkedIn, X and Slack.
+
+    Built from the deep field at the foot of the cover, because a dark ground
+    carries white type at the small sizes these cards are actually rendered
+    at. Everything here is sized so it survives being scaled to a third.
+    """
+    width, height = 1280, 640
+
+    cover = Image.open(cover_path).convert("RGB")
+    # A 2:1 crop taken from the foot of the cover and kept entirely below the
+    # horizon, so the card is deep teal throughout. Reaching any higher pulls
+    # in the pale transition band, and white type on that is unreadable once
+    # a feed has scaled the card down.
+    crop_h = 1028                                   # the deep field is this tall
+    crop_w = crop_h * 2
+    x0 = (cover.width - crop_w) // 2
+    card = cover.crop((x0, cover.height - crop_h, x0 + crop_w, cover.height))
+    card = card.resize((width, height), Image.LANCZOS).convert("RGBA")
+
+    # Darken slightly and evenly so the type never fights the constellation.
+    arr = np.asarray(card.convert("RGB"), dtype=np.float64) * 0.88
+    card = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+
+    ss = 3
+    layer = Image.new("RGBA", (width * ss, height * ss), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(layer)
+
+    serif = find_font("Caladea-Regular.ttf", "DejaVuSerif.ttf")
+    sans = find_font("Carlito-Regular.ttf", "DejaVuSans.ttf")
+
+    acronym = ImageFont.truetype(serif, 176 * ss)
+    longform = ImageFont.truetype(find_font("Caladea-Italic.ttf", "Caladea-Regular.ttf", "DejaVuSerif-Italic.ttf"), 40 * ss)
+    tagline = ImageFont.truetype(sans, 33 * ss)
+
+    left = 74 * ss
+    draw.text((left, 86 * ss), "AICD", font=acronym, fill=(243, 248, 249, 255))
+
+    rule_y = 300 * ss
+    draw.rectangle([left, rule_y, left + 128 * ss, rule_y + 7 * ss], fill=ACCENT2 + (255,))
+
+    draw.text((left, 338 * ss), "Artificial Intelligence Centered Development",
+              font=longform, fill=(240, 150, 84, 255))
+
+    for i, line in enumerate((
+        "A software development methodology for teams",
+        "whose code is written by AI agents.",
+    )):
+        draw.text((left, (426 + i * 46) * ss), line, font=tagline, fill=(214, 231, 236, 255))
+
+    layer = layer.resize((width, height), Image.LANCZOS)
+    out = Image.alpha_composite(card, layer).convert("RGB")
+    out.save(path, "PNG", optimize=True)
+    return out.size
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate the AICD document assets.")
     parser.add_argument(
@@ -302,6 +360,12 @@ def main():
     print("cover_bg.jpg        %dx%d" % build_cover(cover))
     print("portrait_circle.png %dx%d" % build_portrait(portrait))
     print("written to %s" % args.out_dir)
+
+    social_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets")
+    os.makedirs(social_dir, exist_ok=True)
+    social = os.path.join(social_dir, "social-preview.png")
+    print("social-preview.png  %dx%d" % build_social(social, cover))
+    print("written to %s" % social_dir)
     return 0
 
 

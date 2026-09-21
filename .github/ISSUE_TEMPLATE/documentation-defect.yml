@@ -1,0 +1,61 @@
+name: Documentation defect
+description: A broken link, a wrong anchor, a rendering problem or a typo in the document.
+title: "[defect] "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This template is for defects in the document itself.
+
+        Questions and reports of applying AICD belong in
+        [Discussions](https://github.com/rachidsahane/AICD-METHODOLOGY/discussions),
+        and proposals to extend the methodology go through
+        [the Change Proposal process](https://github.com/rachidsahane/AICD-METHODOLOGY/blob/main/proposals/README.md).
+
+        Small fixes are welcome as a pull request instead. See
+        [CONTRIBUTING.md](https://github.com/rachidsahane/AICD-METHODOLOGY/blob/main/CONTRIBUTING.md).
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of defect
+      options:
+        - Broken link or wrong anchor
+        - Rendering problem
+        - Typo or grammar
+        - A cross-reference points at the wrong section
+        - Something else in the document
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where did you see it
+      options:
+        - The web page
+        - The PDF
+        - Both
+        - The HTML source
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Where in the document
+      description: The section number or title, and the page number if you saw it in the PDF.
+      placeholder: Section 17, Autonomy tiers and the permission model, PDF page 33
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: What is wrong
+      description: Quote the text as it appears, and say what it should be if you know.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Document version
+      description: The version on the cover, or the release you downloaded.
+      placeholder: "0.3"
