@@ -1,0 +1,13 @@
+# Issues here are for defects in the document only. Everything conversational
+# goes to Discussions, where the answer stays findable for the next person.
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/rachidsahane/AICD-METHODOLOGY/discussions
+    about: What a section means, whether AICD covers your situation, how to start. Ask in Discussions rather than opening an issue.
+  - name: Report an experience applying AICD
+    url: https://github.com/rachidsahane/AICD-METHODOLOGY/discussions
+    about: What you ran, what broke, and what the methodology got wrong on a real product. Negative results are the most useful contribution here.
+  - name: Propose a change to the methodology
+    url: https://github.com/rachidsahane/AICD-METHODOLOGY/blob/main/proposals/README.md
+    about: Extensions go through the AICD Change Proposal process, as a pull request adding a file to proposals/.
