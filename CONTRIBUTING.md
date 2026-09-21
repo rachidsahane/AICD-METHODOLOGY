@@ -68,9 +68,19 @@ To refresh the copy committed at the repository root:
 cp dist/AICD-Methodology.pdf AICD-Methodology.pdf
 ```
 
-### The generated images
+### The images
 
-`src/cover_bg.jpg` and `src/portrait_circle.png` are produced by [build/generate_assets.py](build/generate_assets.py), deterministically, from the palette the document's CSS declares. Re-running it reproduces the committed files byte for byte. It needs Pillow and NumPy in addition to the pinned build dependencies.
+`src/cover_bg.jpg` and `src/portrait_circle.png` are the author's own cover artwork and photograph. They are committed source, not build output. Do not regenerate them, and do not replace them in a pull request.
+
+`assets/social-preview.png`, the 1280x640 card link previews show, is generated from whichever cover is in `src/`, so it stays in step with the document:
+
+```sh
+python3 build/generate_assets.py
+```
+
+That needs Pillow and NumPy in addition to the pinned build dependencies, and it writes only the social card.
+
+The script also carries generated stand-ins for the cover and the portrait, behind `--placeholders`, for a checkout where the artwork is missing. That flag **overwrites the author's artwork with a generated background and a monogram**, so it is not something to run casually.
 
 ## Checks
 

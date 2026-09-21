@@ -115,6 +115,14 @@ and then cut a new release, following section 2 with the new version number, so 
 
 ## 4. Replace the author portrait
 
+**Done, on 21 September 2026.** `src/portrait_circle.png` is the author's photograph,
+1200 by 1200, and `src/cover_bg.jpg` is the author's cover artwork. Both were recovered
+from the PDF added at the repository root, which was the only copy of either. If you
+still have the original files, replacing these with them is worth doing: the cover was
+extracted as the exact JPEG bytes the PDF carried, but that copy is 768 by 1376, which is
+about 93 dpi on A4 and would benefit from a larger original. The steps below are how to
+replace either one.
+
 `src/portrait_circle.png` is currently a generated monogram placeholder, not a photograph. It is a teal disc carrying the letters A and S, produced by `build/generate_assets.py` because no portrait file was present when the repository was assembled. It exists so the document builds and paginates correctly, and it is meant to be replaced.
 
 To use a real photograph:
@@ -175,15 +183,14 @@ Registration of the mark AICD through OAPI, the African Intellectual Property Or
 
 ## Order of operations
 
-Steps 1 and 2 are done. What remains, in the order to do it:
+Steps 1, 2 and 4 are done. What remains, in the order to do it:
 
 1. Switch the Zenodo toggle on, section 3. Zenodo does not reach back for
-   releases that already exist, so the v0.3 release published before the toggle
-   was switched on will not be archived. A DOI requires publishing a later
-   release, for example `v0.3.1`, after the toggle is on.
+   releases that already exist, so a DOI requires publishing a release after
+   the toggle is on.
 2. Paste the minted DOI into the three places section 3 names, rebuild, and cut
    the release that carries it.
-3. Replace the author portrait, section 4, and rebuild. Worth doing before the
-   DOI release so both land in one version.
+3. If you still have the original cover artwork at a higher resolution, drop it
+   in and rebuild, section 4.
 4. A custom domain, section 5, and trademark registration, section 6, whenever
    you decide on them.
