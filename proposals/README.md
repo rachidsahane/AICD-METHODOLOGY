@@ -1,6 +1,6 @@
 # AICD Change Proposals
 
-An AICD Change Proposal (ACP) is the document that proposes an extension to the methodology and records the decision made about it. It exists because AICD is open to extension and closed to modification: the core is fixed, and an extension to it is adopted only through a reviewed, recorded proposal. The process is defined by the methodology itself, in section 29, "Evolving the methodology: the extension process", of [the AICD document](https://github.com/rachidsahane/AICD-METHODOLOGY/blob/main/src/AICD_Methodology_v0.3.html); this file is the working procedure for this repository.
+An AICD Change Proposal (ACP) is the document that proposes an extension to the methodology and records the decision made about it. It exists because AICD is open to extension and closed to modification: the core is fixed, and an extension to it is adopted only through a reviewed, recorded proposal. The process is defined by the methodology itself, in section 29, "Evolving the methodology: the extension process", of [the AICD document](https://github.com/rachidsahane/AICD-METHODOLOGY/blob/main/src/aicd.html); this file is the working procedure for this repository.
 
 ## What may change, and how
 

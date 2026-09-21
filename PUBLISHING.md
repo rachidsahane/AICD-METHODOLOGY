@@ -92,7 +92,7 @@ The DOI then has to be pasted into three files by hand. Each place carries a mar
 
 1. `README.md`, in the "How to cite" section. Replace `<<NEEDS: Zenodo DOI after first archived release>>` with the DOI. The marker occurs twice, once in the APA citation and once in the `doi` field of the BibTeX entry, and both have to be replaced.
 2. `CITATION.cff`. Uncomment the `identifiers` block at the end of the commented note, that is, remove the leading `# ` from its four lines while keeping the indentation exactly as the comment shows it, and replace `<<NEEDS: Zenodo DOI after first archived release>>` with the DOI.
-3. `src/AICD_Methodology_v0.3.html`, the document source behind the colophon. The `dc.identifier` meta tag sits in the `head`, just above the `title` element, inside an HTML comment. Remove the comment markers so the tag is live, and replace `<<NEEDS: DOI>>` with the DOI.
+3. `src/aicd.html`, the document source behind the colophon. The `dc.identifier` meta tag sits in the `head`, just above the `title` element, inside an HTML comment. Remove the comment markers so the tag is live, and replace `<<NEEDS: DOI>>` with the DOI.
 
 That third edit changes the document itself, so the PDF built before it does not carry the DOI. After editing the HTML, rebuild:
 
@@ -157,7 +157,7 @@ Once the domain serves the document, three files carry addresses that have to be
 
 1. `README.md`, the Site link under "Read it".
 2. `CITATION.cff`, the `url` field. Leave `repository-code` pointing at https://github.com/rachidsahane/AICD-METHODOLOGY , because that field names where the source lives, not where the document is read.
-3. `src/AICD_Methodology_v0.3.html`, the colophon near the front of the document, where the repository address is printed for the reader. Editing it changes the document, so rebuild the PDF with `build/build.sh` and cut a new release afterwards, following section 2.
+3. `src/aicd.html`, the colophon near the front of the document, where the repository address is printed for the reader. Editing it changes the document, so rebuild the PDF with `build/build.sh` and cut a new release afterwards, following section 2.
 
 ## 6. Trademark registration
 

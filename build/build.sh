@@ -168,6 +168,16 @@ PY
 
 SIZE="$(wc -c < "${PDF}" | tr -d ' ')"
 
+# Two names for the same bytes. The versioned name is what a release attaches,
+# so an archived copy says which version it is. The stable name is what the
+# README and the site link to, so those links never need editing at a release.
+STABLE="${OUT_DIR}/AICD-Methodology.pdf"
+cp "${PDF}" "${STABLE}"
+
 echo "build: output   ${PDF#"${REPO_ROOT}/"}"
+echo "build: output   ${STABLE#"${REPO_ROOT}/"}"
 echo "build: pages    ${PAGES}"
 echo "build: bytes    ${SIZE}"
+echo
+echo "build: to refresh the copy committed at the repository root, run:"
+echo "build:   cp ${STABLE#"${REPO_ROOT}/"} AICD-Methodology.pdf"

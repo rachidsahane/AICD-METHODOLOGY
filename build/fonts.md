@@ -1,6 +1,6 @@
 # Fonts
 
-The PDF is rendered by WeasyPrint from `src/AICD_Methodology_v0.3.html`. Every typeface
+The PDF is rendered by WeasyPrint from `src/aicd.html`. Every typeface
 the document uses is named in the inline CSS of that file. Nothing is embedded in the
 HTML and nothing is downloaded at build time, so the fonts have to be installed on the
 machine that runs `build/build.sh`.

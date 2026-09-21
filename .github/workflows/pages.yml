@@ -8,9 +8,11 @@
 # of the release checklist.
 #
 # What gets published: the whole of src/, with the single HTML document renamed
-# to index.html. Every other file keeps its path relative to the document, so
-# cover_bg.jpg, portrait_circle.png and assets/ resolve exactly as they do when
-# the document is opened from a local checkout.
+# to index.html, plus the committed PDF from the repository root. Every other
+# file keeps its path relative to the document, so cover_bg.jpg,
+# portrait_circle.png and assets/ resolve exactly as they do when the document
+# is opened from a local checkout, and the PDF is served at
+# /AICD-Methodology.pdf.
 
 name: Deploy the document to GitHub Pages
 
@@ -66,6 +68,14 @@ jobs:
           if [ "$html_name" != "index.html" ]; then
             mv "_site/${html_name}" _site/index.html
           fi
+
+          # The committed PDF is served next to the page, so the README's
+          # download link and the site's download link are the same file.
+          if [ ! -f AICD-Methodology.pdf ]; then
+            echo "pages: AICD-Methodology.pdf is missing from the repository root" >&2
+            exit 1
+          fi
+          cp AICD-Methodology.pdf _site/AICD-Methodology.pdf
 
           echo "pages: publishing ${html_name} as index.html"
           echo "pages: site contents"
