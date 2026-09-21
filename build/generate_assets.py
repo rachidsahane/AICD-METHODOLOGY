@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Generate the two raster assets the AICD document references.
 
-Both files are written into src/ next to the HTML, which is where the
-document's relative paths expect them:
+By default this regenerates only assets/social-preview.png, the card link
+previews show, from whatever cover is in src/.
 
-  src/cover_bg.jpg        cover background, A4 at 300 dpi
-  src/portrait_circle.png author avatar, square, clipped to a circle by the CSS
+src/cover_bg.jpg and src/portrait_circle.png are the AUTHOR'S OWN artwork and
+photograph. They are committed source, not build output, and a normal run does
+not touch them. The generated stand-ins are still here, behind --placeholders,
+for a checkout where the artwork is missing; that flag overwrites both files.
 
 The output is deterministic: every random draw is seeded, so re-running this
 script reproduces the committed files byte for byte on the same Pillow and
@@ -291,52 +293,65 @@ def build_portrait(path):
 def build_social(path, cover_path):
     """The 1280x640 card that link previews show on LinkedIn, X and Slack.
 
-    Built from the deep field at the foot of the cover, because a dark ground
-    carries white type at the small sizes these cards are actually rendered
-    at. Everything here is sized so it survives being scaled to a third.
+    Built from whatever cover is in src/, so it stays in step with the
+    document rather than drifting from it. The crop is a fixed 2:1 band
+    centred at 42 percent of the cover height, which is where both the
+    author's artwork and the generated stand-in carry their detail. The
+    type colours and the scrim are then chosen from the luminance of that
+    band, so the card is legible whether the cover is light or dark. That
+    matters: these cards are read at a third of their size in a feed.
     """
     width, height = 1280, 640
 
     cover = Image.open(cover_path).convert("RGB")
-    # A 2:1 crop taken from the foot of the cover and kept entirely below the
-    # horizon, so the card is deep teal throughout. Reaching any higher pulls
-    # in the pale transition band, and white type on that is unreadable once
-    # a feed has scaled the card down.
-    crop_h = 1028                                   # the deep field is this tall
+    crop_h = min(cover.height, cover.width // 2)
     crop_w = crop_h * 2
     x0 = (cover.width - crop_w) // 2
-    card = cover.crop((x0, cover.height - crop_h, x0 + crop_w, cover.height))
+    y_centre = int(cover.height * 0.42)
+    y0 = max(0, min(cover.height - crop_h, y_centre - crop_h // 2))
+    card = cover.crop((x0, y0, x0 + crop_w, y0 + crop_h))
     card = card.resize((width, height), Image.LANCZOS).convert("RGBA")
 
-    # Darken slightly and evenly so the type never fights the constellation.
-    arr = np.asarray(card.convert("RGB"), dtype=np.float64) * 0.88
-    card = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+    band = np.asarray(card.convert("L"), dtype=np.float64)
+    light_ground = band.mean() > 140.0
 
     ss = 3
     layer = Image.new("RGBA", (width * ss, height * ss), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer)
 
+    left = 74 * ss
+    if light_ground:
+        # Mirror what the cover itself does: set the type over a panel rather
+        # than straight onto the artwork it would otherwise compete with.
+        draw.rectangle([0, 52 * ss, 900 * ss, 534 * ss], fill=(255, 255, 255, 214))
+        acronym_fill = ACCENT + (255,)
+        longform_fill = ACCENT2 + (255,)
+        tagline_fill = INK + (255,)
+    else:
+        arr = np.asarray(card.convert("RGB"), dtype=np.float64) * 0.88
+        card = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+        acronym_fill = (243, 248, 249, 255)
+        longform_fill = (240, 150, 84, 255)
+        tagline_fill = (214, 231, 236, 255)
+
     serif = find_font("Caladea-Regular.ttf", "DejaVuSerif.ttf")
     sans = find_font("Carlito-Regular.ttf", "DejaVuSans.ttf")
+    italic = find_font("Caladea-Italic.ttf", "Caladea-Regular.ttf", "DejaVuSerif-Italic.ttf")
 
-    acronym = ImageFont.truetype(serif, 176 * ss)
-    longform = ImageFont.truetype(find_font("Caladea-Italic.ttf", "Caladea-Regular.ttf", "DejaVuSerif-Italic.ttf"), 40 * ss)
-    tagline = ImageFont.truetype(sans, 33 * ss)
-
-    left = 74 * ss
-    draw.text((left, 86 * ss), "AICD", font=acronym, fill=(243, 248, 249, 255))
+    draw.text((left, 86 * ss), "AICD", font=ImageFont.truetype(serif, 176 * ss), fill=acronym_fill)
 
     rule_y = 300 * ss
     draw.rectangle([left, rule_y, left + 128 * ss, rule_y + 7 * ss], fill=ACCENT2 + (255,))
 
     draw.text((left, 338 * ss), "Artificial Intelligence Centered Development",
-              font=longform, fill=(240, 150, 84, 255))
+              font=ImageFont.truetype(italic, 40 * ss), fill=longform_fill)
 
+    tagline = ImageFont.truetype(sans, 33 * ss)
     for i, line in enumerate((
         "A software development methodology for teams",
         "whose code is written by AI agents.",
     )):
-        draw.text((left, (426 + i * 46) * ss), line, font=tagline, fill=(214, 231, 236, 255))
+        draw.text((left, (426 + i * 46) * ss), line, font=tagline, fill=tagline_fill)
 
     layer = layer.resize((width, height), Image.LANCZOS)
     out = Image.alpha_composite(card, layer).convert("RGB")
@@ -349,7 +364,16 @@ def main():
     parser.add_argument(
         "--out-dir",
         default=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"),
-        help="directory to write the assets into (default: src/)",
+        help="directory holding the document's images (default: src/)",
+    )
+    parser.add_argument(
+        "--placeholders",
+        action="store_true",
+        help=(
+            "also regenerate cover_bg.jpg and portrait_circle.png. These are the "
+            "author's own artwork and photograph, so this OVERWRITES them with "
+            "generated stand-ins. Only for a checkout where they are missing."
+        ),
     )
     args = parser.parse_args()
     os.makedirs(args.out_dir, exist_ok=True)
@@ -357,14 +381,21 @@ def main():
     cover = os.path.join(args.out_dir, "cover_bg.jpg")
     portrait = os.path.join(args.out_dir, "portrait_circle.png")
 
-    print("cover_bg.jpg        %dx%d" % build_cover(cover))
-    print("portrait_circle.png %dx%d" % build_portrait(portrait))
-    print("written to %s" % args.out_dir)
+    if args.placeholders:
+        print("cover_bg.jpg        %dx%d  (generated stand-in, overwrote the artwork)" % build_cover(cover))
+        print("portrait_circle.png %dx%d  (monogram, NOT a photograph)" % build_portrait(portrait))
+
+    if not os.path.isfile(cover):
+        raise SystemExit(
+            "generate_assets: %s is missing. It is the author's cover artwork and is "
+            "committed to the repository. Restore it, or pass --placeholders to "
+            "generate a stand-in." % cover
+        )
 
     social_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets")
     os.makedirs(social_dir, exist_ok=True)
     social = os.path.join(social_dir, "social-preview.png")
-    print("social-preview.png  %dx%d" % build_social(social, cover))
+    print("social-preview.png  %dx%d  (from %s)" % (build_social(social, cover) + (os.path.basename(cover),)))
     print("written to %s" % social_dir)
     return 0
 
