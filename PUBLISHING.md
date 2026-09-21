@@ -6,6 +6,10 @@ The reader assumed here is the author, working on their own machine, already sig
 
 ## 1. Enable GitHub Pages
 
+**Done, on 21 September 2026.** Pages is enabled with the GitHub Actions source and the site is live at
+https://rachidsahane.github.io/AICD-METHODOLOGY/ . The steps are kept below because they are how to
+re-enable it, or how to check the setting if the site ever stops updating.
+
 The site is published by a workflow rather than from a branch, so Pages has to be told to take its content from GitHub Actions. This is a one time setting.
 
 1. Open https://github.com/rachidsahane/AICD-METHODOLOGY in the browser.
@@ -29,6 +33,12 @@ Confirm it worked:
 If either image is missing while the text is fine, the deployment published the HTML without the files next to it. Open the failing run from the **Actions** tab, read its log, and confirm the workflow copied the whole of `src/` into the artifact it uploaded. Before investigating anything else, force a reload with Shift and the reload button, which rules out a cached earlier attempt.
 
 ## 2. Create and push the tag v0.3, then verify the release
+
+**Done for v0.3, on 21 September 2026.** The release is at
+https://github.com/rachidsahane/AICD-METHODOLOGY/releases/tag/v0.3 with
+`AICD-Methodology-v0.3.pdf` attached, 76 pages, and its notes taken from the `0.3`
+entry in `CHANGELOG.md`. The steps below are the procedure for every later version;
+substitute the new version number throughout.
 
 **Do not push the tag before the publication branch has been merged into `main`.** `.github/workflows/release.yml` builds whatever commit the tag points at, so a tag created on an unmerged branch, or on an older commit, produces a release whose PDF is not the published document. Recovering from that means deleting the release and the tag and starting the section again.
 
@@ -165,7 +175,15 @@ Registration of the mark AICD through OAPI, the African Intellectual Property Or
 
 ## Order of operations
 
-1. Merge the publication pull request into `main`, so that `main` holds the document, the build and the workflows.
-2. Enable GitHub Pages, section 1, and confirm the site renders with both images.
-3. Switch the Zenodo toggle on, section 3, while no release exists yet, so the first release is archived and gets a DOI.
-4. Create and push the tag `v0.3`, section 2, then verify the release and paste the DOI into the three files.
+Steps 1 and 2 are done. What remains, in the order to do it:
+
+1. Switch the Zenodo toggle on, section 3. Zenodo does not reach back for
+   releases that already exist, so the v0.3 release published before the toggle
+   was switched on will not be archived. A DOI requires publishing a later
+   release, for example `v0.3.1`, after the toggle is on.
+2. Paste the minted DOI into the three places section 3 names, rebuild, and cut
+   the release that carries it.
+3. Replace the author portrait, section 4, and rebuild. Worth doing before the
+   DOI release so both land in one version.
+4. A custom domain, section 5, and trademark registration, section 6, whenever
+   you decide on them.
