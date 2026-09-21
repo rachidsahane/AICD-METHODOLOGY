@@ -1,0 +1,49 @@
+# Checks that run on every pull request and on every push to main.
+#
+# These are the cheap checks that do not need the fonts or a full render.
+# The document's anchors are checked here because a duplicate id never fails
+# a build: it silently redirects every link to the first occurrence, so the
+# contents can print the wrong page number with nothing reporting an error.
+
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  anchors:
+    name: Document anchors
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Check the document's anchors
+        run: python3 build/check_anchors.py
+
+  links:
+    name: Repository links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Check that every relative link in the Markdown files resolves
+        run: python3 build/check_links.py
