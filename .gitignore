@@ -16,3 +16,8 @@ venv/
 .Trashes
 Thumbs.db
 desktop.ini
+
+# The PDF the author added by hand before the build existed. Kept out of
+# the repository so it is never committed by accident; it holds the only
+# copy of the original cover art and author photograph.
+/AICD_Methodology_v0.3.pdf
