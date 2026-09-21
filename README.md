@@ -1,29 +1,59 @@
 # AICD: Artificial Intelligence Centered Development
 
-AICD is a software development methodology for teams whose code is written by AI agents. It starts from one observation: when producing code stops being scarce, the difficulty moves to three places, specifying precisely what should exist, verifying that what was built is correct, and deciding on architecture, stack and priorities. AICD reproduces a complete development team with AI agents that build, test, operate and document the software, and places a small group of experienced engineers above them as specifiers, verifiers, decision makers and monitors. Those engineers read code fluently but never write production code or test code, because the specification stays the source of truth and every change enters through git.
+A software development methodology for teams whose code is written by AI agents.
 
-## Current version and status
+Every methodology of the last forty years was built around one scarce resource: the time of skilled humans writing code. Waterfall planned that time, Scrum sliced it into sprints and estimated it in story points, and standups, retrospectives and velocity charts all exist to coordinate something expensive and slow to hire. That scarcity is going away. When producing code stops being the bottleneck, the difficulty moves somewhere else: to specifying precisely what should exist, to verifying that what was built is correct, and to deciding the architecture, the stack and what is worth building at all.
 
-Version 0.3, working draft, September 2026.
+AICD is designed around those three bottlenecks instead of the old one. It reproduces a complete development team with AI agents that build, test, operate and document the software, and it places a small group of experienced engineers above them, who specify, verify, decide and supervise. Those engineers read code fluently and are hired for exactly that, but they do not write production code or test code. The specification is the source of truth, every change enters through git, and nothing ships without a human who understands the system approving it on evidence.
 
-- Latest release: https://github.com/rachidsahane/AICD-METHODOLOGY/releases/latest
-- PDF asset of the v0.3 release: https://github.com/rachidsahane/AICD-METHODOLOGY/releases/download/v0.3/AICD-Methodology-v0.3.pdf
+**[Read it online](https://rachidsahane.github.io/AICD-METHODOLOGY/)**  ·  **[Download the PDF](AICD-Methodology.pdf)**
 
-Neither the release nor its PDF asset exists yet. Both appear only once the author creates the `v0.3` tag and publishes the release, which is a manual step described in [PUBLISHING.md](PUBLISHING.md).
+Version 0.3, working draft, September 2026. 76 pages.
 
-## Read it
+## What's inside
 
-- Site: https://rachidsahane.github.io/AICD-METHODOLOGY/
-- PDF: https://github.com/rachidsahane/AICD-METHODOLOGY/releases/download/v0.3/AICD-Methodology-v0.3.pdf
-- HTML source: https://github.com/rachidsahane/AICD-METHODOLOGY/blob/main/src/aicd.html
+- **[Part I: Understanding AICD](https://rachidsahane.github.io/AICD-METHODOLOGY/#part1)** Why the methodology exists, what it is, and what it asks of the humans who use it. No technical background required.
+- **[Part II: The architecture of AICD](https://rachidsahane.github.io/AICD-METHODOLOGY/#part2)** The structural core: the five layers, the agent team and how its roles are separated, and the memory that gives every agent knowledge of the whole project.
+- **[Part III: How work flows](https://rachidsahane.github.io/AICD-METHODOLOGY/#part3)** How a need becomes a specification, a ticket, a branch, a verified pull request, a deployment and an observed behavior.
+- **[Part IV: People and organization](https://rachidsahane.github.io/AICD-METHODOLOGY/#part4)** Who the humans are, what they own, how they are hired, and how they stay capable of disagreeing with the machines they direct.
+- **[Part V: Governance, economics, resilience](https://rachidsahane.github.io/AICD-METHODOLOGY/#part5)** What it costs to run, how to know whether it is working, and what can go wrong.
+- **[Part VI: Applying AICD](https://rachidsahane.github.io/AICD-METHODOLOGY/#part6)** How a product enters the methodology, either born inside it or migrated into it from a codebase that already exists.
+- **[Part VII: Deep dives](https://rachidsahane.github.io/AICD-METHODOLOGY/#part7)** The memory service, running several products with one team, the security model of the agent fleet, the fleet dashboard, how the methodology evolves, and how its thresholds are calibrated.
+- **[Part VIII: Extensions and profiles](https://rachidsahane.github.io/AICD-METHODOLOGY/#part8)** Profiles for mobile clients, for working without live telemetry, for regulated domains and for a single operator, plus what the first real application taught.
+- **[Appendices](https://rachidsahane.github.io/AICD-METHODOLOGY/#appx)** Templates, glossary, document history.
 
-The site is served by GitHub Pages and responds only after the author enables Pages for this repository, per [PUBLISHING.md](PUBLISHING.md). Until the v0.3 release is published, the PDF link returns a 404 and the document can be read from the HTML source or built locally.
+## Start here
+
+- **Founder or product lead.** Read [Part I](https://rachidsahane.github.io/AICD-METHODOLOGY/#part1), then [Economics and metrics](https://rachidsahane.github.io/AICD-METHODOLOGY/#s21) and [Failure modes and safeguards](https://rachidsahane.github.io/AICD-METHODOLOGY/#s22). That is what it is, what it costs, and how it breaks.
+- **Engineer starting a new product.** Read [Part I](https://rachidsahane.github.io/AICD-METHODOLOGY/#part1) and [Part II](https://rachidsahane.github.io/AICD-METHODOLOGY/#part2), then work through [Starting a new product under AICD](https://rachidsahane.github.io/AICD-METHODOLOGY/#s23), which runs from gate G0 to gate G7.
+- **Engineer migrating a product that already exists**, whether it was built with agents or entirely by hand. Read [Part I](https://rachidsahane.github.io/AICD-METHODOLOGY/#part1), then [Migrating an existing product into AICD](https://rachidsahane.github.io/AICD-METHODOLOGY/#s24), phases M0 to M5, and [Lessons from the first application](https://rachidsahane.github.io/AICD-METHODOLOGY/#s39) before you touch anything.
+- **You only want the rules.** [Founding principles](https://rachidsahane.github.io/AICD-METHODOLOGY/#s3) is eight of them on one page. Then [Autonomy tiers and the permission model](https://rachidsahane.github.io/AICD-METHODOLOGY/#s17) and [Git and release workflow](https://rachidsahane.github.io/AICD-METHODOLOGY/#s13) for what an agent is allowed to do.
+- **Working alone.** [Profile: the single operator](https://rachidsahane.github.io/AICD-METHODOLOGY/#s38) is the only accepted substitute for the second human that tier 2 changes require.
+
+## Learned the hard way
+
+Four findings from the first migration of a live product into AICD, each recorded in [Lessons from the first application](https://rachidsahane.github.io/AICD-METHODOLOGY/#s39) with the failure that earned it.
+
+- **A ticket asked for the deletion of a directory described as a dead legacy backend.** The agent's first gate, prove which component serves production, showed the directory owned the live database's migration history and built two of five production images. Destructive tickets now state a belief and its source, never a conclusion, and proof precedes action. [Read it](https://rachidsahane.github.io/AICD-METHODOLOGY/#s39)
+- **A rollback point was named in the backlog as if it existed. It did not.** Every precondition a ticket names is now verified to exist at approval time, not at execution time. [Read it](https://rachidsahane.github.io/AICD-METHODOLOGY/#s39)
+- **Two CI workflows sat intact behind a manual trigger and a build target had no recipe, while every document cited them as gates.** A newly written citation checker returned failure on clean and dirty trees alike and looked like it was working. "Present but reporting nothing" is now a named defect class, and a gate is installed only after it has been seen to fail on a planted defect. [Read it](https://rachidsahane.github.io/AICD-METHODOLOGY/#s39)
+- **Four drafting agents produced eleven fabricated section references, one of which would have removed a required check.** References are now checked mechanically: the section index is machine-readable, a checker validates every reference, and the drafting-error rate is a calibration metric. [Read it](https://rachidsahane.github.io/AICD-METHODOLOGY/#s39)
+
+The pattern across all eight findings is worth stating once, and the document states it: none of the failures were the agents' inventions. Every one was a human belief written into an artifact as a fact, or a control that existed on paper. The gates caught them because the gates demanded proof rather than agreement.
+
+## Discuss
+
+Questions, disagreements and reports of applying AICD on a real product are all welcome in [GitHub Discussions](https://github.com/rachidsahane/AICD-METHODOLOGY/discussions). If you have run part of this on something real, what broke is more useful than what worked.
+
+## Evolving the methodology
+
+AICD is open to extension and closed to modification. The core, meaning the founding principles, the five-layer architecture and the separation of duties, is not revised to suit a project, a tool or a new model release; only the author changes it, and such a change increments the major version. An addition to the methodology itself, a new agent role, a new ticket category, a new test family, a new document type or a compliance overlay, is proposed as an AICD Change Proposal, reviewed by every seat, and adopted with a minor version increment. [proposals/README.md](proposals/README.md) has what a proposal must contain and how one is reviewed.
 
 ## How to cite
 
 APA:
 
-> Ngatcha Sahane, R. A. (2026). *AICD: Artificial Intelligence Centered Development* (Version 0.3) [Methodology document]. https://github.com/rachidsahane/AICD-METHODOLOGY. DOI: <<NEEDS: Zenodo DOI after first archived release>>
+> Ngatcha Sahane, R. A. (2026). *AICD: Artificial Intelligence Centered Development* (Version 0.3) [Methodology document]. https://github.com/rachidsahane/AICD-METHODOLOGY
 
 BibTeX:
 
@@ -33,25 +63,11 @@ BibTeX:
   author  = {Ngatcha Sahane, Rachid Alim},
   year    = {2026},
   version = {0.3},
-  url     = {https://github.com/rachidsahane/AICD-METHODOLOGY},
-  doi     = {<<NEEDS: Zenodo DOI after first archived release>>}
+  url     = {https://github.com/rachidsahane/AICD-METHODOLOGY}
 }
 ```
 
-## Contributing and evolving the methodology
-
-AICD is open to extension and closed to modification. The core, meaning the founding principles, the five-layer architecture and the separation of duties, is not revised to suit a project, a tool or a new model release; only the author changes it, and such a change increments the major version. Everything that depends on the current state of tooling is an extension point and is recorded as an organizational decision, while an addition to the methodology itself, a new agent role, a new ticket category, a new test family, a new document type or a compliance overlay, is proposed as an AICD Change Proposal, reviewed by every seat, and adopted with a minor version increment. Read [proposals/README.md](proposals/README.md) for what a proposal must contain and how one is reviewed.
-
-## Building the PDF
-
-Install the fonts the document uses first, system wide, as listed in [build/fonts.md](build/fonts.md). The build substitutes silently otherwise and the pagination changes. Then:
-
-```sh
-python3 -m pip install -r build/requirements.txt
-build/build.sh
-```
-
-The output is `dist/AICD-Methodology-v0.3.pdf`, and the script prints the page count, which is 76 pages for v0.3. The build checks every image the document references and fails before rendering if any of them is missing from `src/`, so an incomplete PDF is never produced. The two generated images, `src/cover_bg.jpg` and `src/portrait_circle.png`, are committed to the repository and can be regenerated deterministically with `build/generate_assets.py`, which needs Pillow and NumPy in addition to the pinned build dependencies.
+[CITATION.cff](CITATION.cff) carries the same values in machine-readable form.
 
 ## License
 
@@ -68,3 +84,5 @@ Ngatcha Sahane Rachid Alim, writing as Alim Sahane.
 - GitHub: https://github.com/rachidsahane
 - LinkedIn: https://www.linkedin.com/in/alim-sahane/
 - Email: rachidsahane007@gmail.com
+
+Contributions, including how to build the PDF yourself, are covered in [CONTRIBUTING.md](CONTRIBUTING.md).
