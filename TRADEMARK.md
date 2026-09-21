@@ -4,7 +4,7 @@ This document explains how the name "AICD" and the phrase "Artificial Intelligen
 
 ## What the name covers
 
-The name AICD, and its long form Artificial Intelligence Centered Development, identify this methodology as published in this repository: the document at `src/AICD_Methodology_v0.3.html`, its released versions, and the extensions adopted here.
+The name AICD, and its long form Artificial Intelligence Centered Development, identify this methodology as published in this repository: the document at `src/aicd.html`, its released versions, and the extensions adopted here.
 
 The methodology text is free to use, share and adapt under Creative Commons Attribution 4.0 International (CC BY 4.0). The name is not part of that license. Copyright and naming are separate questions, so permission to reuse the text is not permission to apply the name to something else.
 

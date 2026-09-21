@@ -121,6 +121,6 @@ jobs:
       - name: Publish the release
         uses: softprops/action-gh-release@v3
         with:
-          files: dist/*.pdf
+          files: dist/AICD-Methodology-v*.pdf
           body_path: ${{ steps.notes.outputs.path }}
           fail_on_unmatched_files: true

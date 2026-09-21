@@ -15,7 +15,7 @@ Neither the release nor its PDF asset exists yet. Both appear only once the auth
 
 - Site: https://rachidsahane.github.io/AICD-METHODOLOGY/
 - PDF: https://github.com/rachidsahane/AICD-METHODOLOGY/releases/download/v0.3/AICD-Methodology-v0.3.pdf
-- HTML source: https://github.com/rachidsahane/AICD-METHODOLOGY/blob/main/src/AICD_Methodology_v0.3.html
+- HTML source: https://github.com/rachidsahane/AICD-METHODOLOGY/blob/main/src/aicd.html
 
 The site is served by GitHub Pages and responds only after the author enables Pages for this repository, per [PUBLISHING.md](PUBLISHING.md). Until the v0.3 release is published, the PDF link returns a 404 and the document can be read from the HTML source or built locally.
 
